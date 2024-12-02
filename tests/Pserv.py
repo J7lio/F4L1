@@ -1,17 +1,20 @@
 import time
 from datetime import datetime, timedelta
-from asyncua.sync import Server
+from asyncua.sync import Server,Client
 import pandas as pd
+
+def leer_dato(hoja_de_datos):
+    datos = pd.read_excel(excel)
+    datos.columns = ['Fecha', 'Datos']
+    datos['Fecha'] = pd.to_datetime(datos['Fecha'])
+    datos = datos.dropna(subset=['Fecha'])
+
+    return list(zip(datos['Fecha'], datos['Datos']))  # tupla de de fecha y datos
 
 if __name__ == "__main__":
 
     excel = "PluviómetroChiva_29octubre2024.xlsx"
-    datos = pd.read_excel(excel)
-    datos.columns = ['Fecha', 'Datos']
-    datos['Fecha'] = pd.to_datetime(datos['Fecha'], errors='coerce')
-    datos = datos.dropna(subset=['Fecha'])
-
-    datos_pluviometro = list(zip(datos['Fecha'], datos['Datos']))#tupla de de fecha y datos
+    datos_pluviometro = leer_dato(excel)
 
     servidor = Server()
     servidor.set_endpoint("opc.tcp://localhost:4840/servidor_pluviometro/")
@@ -26,6 +29,7 @@ if __name__ == "__main__":
 
     variable_pluviometro_hora = obj_pluviometro.add_variable(idx, "HoraPluviometro", datos_pluviometro[0][0].timestamp())
     variable_pluviometro_hora.set_writable()
+
 
 
     servidor.start()
@@ -44,4 +48,4 @@ if __name__ == "__main__":
             time.sleep(1)
     finally:
         servidor.stop()
-             
+
