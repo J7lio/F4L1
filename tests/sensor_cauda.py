@@ -21,12 +21,14 @@ if __name__ == "__main__":
 
     obj_caudal = servidor.nodes.objects.add_object(idx, "caudal")
 
-    variable_caudal_dato = obj_caudal.add_variable(idx, "DatosCaudal", datos_caudal[0][2])
+    variable_caudal_dato = obj_caudal.add_variable(idx, "DatosCaudal", datos_caudal[0][1])
     variable_caudal_dato.set_writable()
 
-    variable_caudal_hora = obj_caudal.add_variable(idx, "HoraCaudal",
-                                                             datos_caudal[0][1].timestamp())
+    variable_caudal_hora = obj_caudal.add_variable(idx, "HoraCaudal", datos_caudal[0][0].timestamp())
     variable_caudal_hora.set_writable()
+
+    variable_caudal_estado = obj_caudal.add_variable(idx, "EstadoCaudal", datos_caudal[0][2].timestamp())
+    variable_caudal_estado.set_writable()
 
     servidor.start()
 
