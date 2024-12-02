@@ -5,11 +5,11 @@ from asyncua.sync import Server
 delta_tiempo = 300 # 5 minutos
 duracion_simulada_dia = 100 # 10 minutos
 
-fecha_hora_inicio = "29-10-24 0:00"
+fecha_hora_inicio_str = "29-10-24 0:00"
 hora_simulada = None
 
 # Convertir la cadena a un objeto datetime
-fecha_hora_obj = datetime.strptime(fecha_hora_inicio, "%d-%m-%y %H:%M")
+fecha_hora_obj = datetime.strptime(fecha_hora_inicio_str, "%d-%m-%y %H:%M")
 
 if __name__ == "__main__":
     servidor = Server()
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     servidor.start()
 
     try:
-        hora_simulada = fecha_hora_inicio
+        hora_simulada = fecha_hora_obj
         incremento_tiempo = timedelta(seconds=delta_tiempo)
 
         while True:
