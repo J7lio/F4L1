@@ -57,11 +57,38 @@
             <cellSize>200</cellSize>
             <gauges>
                <gauge>
+                  <type>TEXT</type>
+                  <rowIndex>1</rowIndex>
+                  <colIndex>0</colIndex>
+                  <rowSpan>1</rowSpan>
+                  <colSpan>4</colSpan>
+                  <items>
+                     <item>
+                        <serverUri>urn:freeopcua:python:server</serverUri>
+                        <namespaceUri>http://www.f4l1.es/server</namespaceUri>
+                        <nodeIdValue>i=3</nodeIdValue>
+                        <dataType>String</dataType>
+                        <signalName>HoraSimuladaTexto</signalName>
+                        <currentWrite>true</currentWrite>
+                        <loggingEnabled>false</loggingEnabled>
+                     </item>
+                  </items>
+                  <parameters>
+                     <title>HoraSimuladaTexto</title>
+                     <unit></unit>
+                     <scaling>1.0</scaling>
+                     <offset>0.0</offset>
+                     <enableWriteMode>false</enableWriteMode>
+                     <fontSize>40</fontSize>
+                     <gaugeColor>BLACK</gaugeColor>
+                  </parameters>
+               </gauge>
+               <gauge>
                   <type>NUMERIC</type>
                   <rowIndex>0</rowIndex>
                   <colIndex>0</colIndex>
                   <rowSpan>1</rowSpan>
-                  <colSpan>1</colSpan>
+                  <colSpan>2</colSpan>
                   <items>
                      <item>
                         <serverUri>urn:freeopcua:python:server</serverUri>
@@ -102,33 +129,6 @@
                         <highHighDeactivationMessage></highHighDeactivationMessage>
                         <loggingEnabled>false</loggingEnabled>
                      </alarmLimits>
-                     <enableWriteMode>false</enableWriteMode>
-                     <fontSize>40</fontSize>
-                     <gaugeColor>BLACK</gaugeColor>
-                  </parameters>
-               </gauge>
-               <gauge>
-                  <type>TEXT</type>
-                  <rowIndex>0</rowIndex>
-                  <colIndex>1</colIndex>
-                  <rowSpan>1</rowSpan>
-                  <colSpan>1</colSpan>
-                  <items>
-                     <item>
-                        <serverUri>urn:freeopcua:python:server</serverUri>
-                        <namespaceUri>http://www.f4l1.es/server</namespaceUri>
-                        <nodeIdValue>i=3</nodeIdValue>
-                        <dataType>String</dataType>
-                        <signalName>HoraSimuladaTexto</signalName>
-                        <currentWrite>true</currentWrite>
-                        <loggingEnabled>false</loggingEnabled>
-                     </item>
-                  </items>
-                  <parameters>
-                     <title>HoraSimuladaTexto</title>
-                     <unit></unit>
-                     <scaling>1.0</scaling>
-                     <offset>0.0</offset>
                      <enableWriteMode>false</enableWriteMode>
                      <fontSize>40</fontSize>
                      <gaugeColor>BLACK</gaugeColor>
