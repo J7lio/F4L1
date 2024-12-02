@@ -5,39 +5,39 @@ import pandas as pd
 
 if __name__ == "__main__":
 
-    excel = "PluviómetroChiva_29octubre2024.xlsx"
+    excel = "cincominutales-rambla-poyo.xlsx"
     datos = pd.read_excel(excel)
-    datos.columns = ['Fecha', 'Datos']
+    datos.columns = ['Fecha', 'Caudal', 'Estado']
     datos['Fecha'] = pd.to_datetime(datos['Fecha'], errors='coerce')
     datos = datos.dropna(subset=['Fecha'])
 
-    datos_pluviometro = list(zip(datos['Fecha'], datos['Datos']))  # tupla de de fecha y datos
+    datos_caudal= list(zip(datos['Fecha'], datos['Caudal'], datos['Estado']))  # tupla de de fecha y datos
 
     servidor = Server()
-    servidor.set_endpoint("opc.tcp://localhost:4840/servidor_pluviometro/")
+    servidor.set_endpoint("opc.tcp://localhost:4840/servidor_caudal/")
 
-    uri = "http://www.f4l1.es/server_plu"
+    uri = "http://www.f4l1.es/server_cau"
     idx = servidor.register_namespace(uri)
 
-    obj_pluviometro = servidor.nodes.objects.add_object(idx, "pluviometro")
+    obj_caudal = servidor.nodes.objects.add_object(idx, "caudal")
 
-    variable_pluviometro_dato = obj_pluviometro.add_variable(idx, "DatosPluviometro", datos_pluviometro[0][1])
-    variable_pluviometro_dato.set_writable()
+    variable_caudal_dato = obj_caudal.add_variable(idx, "DatosCaudal", datos_caudal[0][2])
+    variable_caudal_dato.set_writable()
 
-    variable_pluviometro_hora = obj_pluviometro.add_variable(idx, "HoraPluviometro",
-                                                             datos_pluviometro[0][0].timestamp())
-    variable_pluviometro_hora.set_writable()
+    variable_caudal_hora = obj_caudal.add_variable(idx, "HoraCaudal",
+                                                             datos_caudal[0][1].timestamp())
+    variable_caudal_hora.set_writable()
 
     servidor.start()
 
     try:
         cont_list = 0
         while True:
-            hora, data = datos_pluviometro[cont_list]
+            hora, data = datos_caudal[cont_list]
             data = float(data)
 
-            variable_pluviometro_hora.write_value(hora.timestamp())
-            variable_pluviometro_dato.write_value(data)
+            variable_caudal_hora.write_value(hora.timestamp())
+            variable_caudal_dato.write_value(data)
 
             cont_list += 1
 
