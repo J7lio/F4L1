@@ -2,6 +2,15 @@ import time
 from datetime import datetime, timedelta
 from asyncua.sync import Server
 
+delta_tiempo = 300 # 5 minutos
+duracion_simulada_dia = 100 # 10 minutos
+
+fecha_hora_inicio = "29-10-24 0:00"
+hora_simulada = None
+
+# Convertir la cadena a un objeto datetime
+fecha_hora_obj = datetime.strptime(fecha_hora_inicio, "%d-%m-%y %H:%M")
+
 if __name__ == "__main__":
     servidor = Server()
     servidor.set_endpoint("opc.tcp://0.0.0.0:4840/servidor_temporal/")
@@ -19,15 +28,17 @@ if __name__ == "__main__":
     servidor.start()
 
     try:
-        hora_actual = datetime.now()
-        incremento_tiempo = timedelta(seconds=1)
+        hora_simulada = fecha_hora_inicio
+        incremento_tiempo = timedelta(seconds=delta_tiempo)
 
         while True:
-            time.sleep(1)
-            hora_actual += incremento_tiempo
+            tiempo_espera = delta_tiempo * duracion_simulada_dia / 86400
+            time.sleep(tiempo_espera)
+            hora_simulada += incremento_tiempo
             
-            hora_numerica.write_value(hora_actual.timestamp())
-            
-            hora_texto.write_value(hora_actual.strftime('%H:%M:%S'))
+            hora_numerica.write_value(hora_simulada.timestamp())
+
+            fecha_hora_str = hora_simulada.strftime("%d de %b %H:%M:%S")
+            hora_texto.write_value(fecha_hora_str)
     finally:
         servidor.stop()
