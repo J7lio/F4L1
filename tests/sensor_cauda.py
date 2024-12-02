@@ -5,7 +5,7 @@ import pandas as pd
 
 if __name__ == "__main__":
 
-    excel = "cincominutales-rambla-poyo.xlsx"
+    excel = "../data/cincominutales-rambla-poyo-29102024.xlsx"
     datos = pd.read_excel(excel)
     datos.columns = ['Fecha', 'Caudal', 'Estado']
     datos['Fecha'] = pd.to_datetime(datos['Fecha'], errors='coerce')
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     variable_caudal_hora = obj_caudal.add_variable(idx, "HoraCaudal", datos_caudal[0][0].timestamp())
     variable_caudal_hora.set_writable()
 
-    variable_caudal_estado = obj_caudal.add_variable(idx, "EstadoCaudal", datos_caudal[0][2].timestamp())
+    variable_caudal_estado = obj_caudal.add_variable(idx, "EstadoCaudal", datos_caudal[0][2])
     variable_caudal_estado.set_writable()
 
     servidor.start()
