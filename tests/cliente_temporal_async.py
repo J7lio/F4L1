@@ -1,46 +1,40 @@
-from asyncua.sync import Client
-import time
+import asyncio
+from asyncua import Client, Node, ua
 
-class SubHandler:
-    def datachange_notification(self, node, val, data):
-        print(f"Variable actualizada: {node} - Nuevo valor: {val}")
 
-if __name__ == "__main__":
-    url = "opc.tcp://localhost:4840/servidor_temporal/"
+class SubscriptionHandler:
+    """
+    The SubscriptionHandler is used to handle the data that is received for the subscription.
+    """
+    def datachange_notification(self, node: Node, val, data):
+        """
+        Callback for asyncua Subscription.
+        This method will be called when the Client received a data change message from the Server.
+        """
+        print(f"datachange_notification node:{node} val:{val}")
 
-    with Client(url) as client:
-        print("Conectado al servidor OPC UA")
 
-        # Obtener el nodo base del servidor
-        root = client.nodes.root
-        objects = client.nodes.objects
-        print("Root y Objects obtenidos.")
+async def main():
+    """
+    Main task of this Client-Subscription example.
+    """
+    client = Client(url="opc.tcp://localhost:4840/servidor_temporal/")
+    async with client:
+        idx = await client.get_namespace_index(uri="http://www.f4l1.es/server")
+        var = await client.nodes.objects.get_child(f"{idx}:ServidorTemporal/{idx}:HoraSimuladaTexto")
+        handler = SubscriptionHandler()
+        # We create a Client Subscription.
+        subscription = await client.create_subscription(100, handler)
 
-        # Buscar el nodo del objeto "ServidorTemporal"
-        uri = "http://www.f4l1.es/server"
-        idx = 2
-        servidor_temporal = objects.get_child([f"{idx}:ServidorTemporal"])
-
-        # Obtener las variables
-        hora_numerica = servidor_temporal.get_child([f"{idx}:HoraSimuladaNumerica"])
-        hora_texto = servidor_temporal.get_child([f"{idx}:HoraSimuladaTexto"])
-
-        print("Variables obtenidas:")
-        print(f" - {hora_numerica}")
-        print(f" - {hora_texto}")
-
-        # Crear un manejador de suscripciones
-        handler = SubHandler()
-        subscription = client.create_subscription(100, handler)
-
-        # Suscribirse a las variables
-        subscription.subscribe_data_change(hora_numerica)
-        subscription.subscribe_data_change(hora_texto)
-
-        print("Suscripción creada. Monitoreando actualizaciones...")
-
+        # We subscribe to data changes for two nodes (variables).
+        await subscription.subscribe_data_change(var)
+        # We let the subscription run for ten seconds
         try:
             while True:
-                time.sleep(5)  # Mantener el cliente activo
-        except KeyboardInterrupt:
-            print("Cliente detenido.")
+                await asyncio.sleep(1)  # Keep the event loop alive
+        finally:
+            await subscription.delete()  # Cleanup on exit
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
