@@ -18,7 +18,7 @@ class SubscriptionHandler:
 
 
     def __init__(self):
-        self.ruta_csv_caudal = "../data/cincominutales-rambla-poyo-29102024.csv"
+        self.ruta_csv_caudal = "../data/cincominutales_modificado.csv"
         self.datos_caudal = leer_csv(self.ruta_csv_caudal)
 
         self.servidor = Server()
