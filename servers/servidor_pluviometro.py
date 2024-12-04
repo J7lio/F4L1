@@ -43,8 +43,12 @@ class SubscriptionHandler:
         for row in self.datos_lluvia:
             if row['Fecha'] == fecha:
                 data = row['Lluvia']
+
                 if data == "":
                     data = "NoData"
+                else:
+                    print(f'Fecha: {fecha}')
+
                 # print(fecha, data, type(data)) // Descomentar para ver el data por terminal
         if data == None:
             print(f"Fecha {fecha} no registrada")

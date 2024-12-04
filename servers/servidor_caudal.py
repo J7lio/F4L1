@@ -42,11 +42,14 @@ class SubscriptionHandler:
         data = None
         for row in self.datos_caudal:
             if row['Fecha'] == fecha:
-                print(f'Fecha: {fecha}')
+
                 data = row['Caudal']
                 if data == "":
                     data = "Fallo en el Sensor"
+                else:
+                    print(f'Fecha: {fecha}')
                 # print(fecha, data, type(data)) // Descomentar para ver el data por terminal
+
         if data == None:
             print(f"Fecha {fecha} no registrada")
         return data
