@@ -42,9 +42,10 @@ class SubscriptionHandler:
         data = None
         for row in self.datos_caudal:
             if row['Fecha'] == fecha:
+                print(f'Fecha: {fecha}')
                 data = row['Caudal']
                 if data == "":
-                    data = "NoData"
+                    data = "Fallo en el Sensor"
                 # print(fecha, data, type(data)) // Descomentar para ver el data por terminal
         if data == None:
             print(f"Fecha {fecha} no registrada")
@@ -53,7 +54,9 @@ class SubscriptionHandler:
 
     def publicar_caudal(self, dato):
         self.variable_caudal_dato.write_value(dato)
-        print("Publicando dato: ", dato)
+
+        print("Dato registrado: ", dato)
+
 
 
     def datachange_notification(self, node: Node, val, data):
