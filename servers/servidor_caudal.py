@@ -18,19 +18,19 @@ class SubscriptionHandler:
 
 
     def __init__(self):
-        self.ruta_csv_pluviometro = "../data/PluviómetroChiva_29octubre2024.csv"
-        self.datos_lluvia = leer_csv(self.ruta_csv_pluviometro)
+        self.ruta_csv_caudal = "../data/cincominutales_modificado.csv"
+        self.datos_caudal = leer_csv(self.ruta_csv_caudal)
 
         self.servidor = Server()
-        self.servidor.set_endpoint("opc.tcp://localhost:4841/f4l1/servidor_pluviometro/")
+        self.servidor.set_endpoint("opc.tcp://localhost:4842/f4l1/servidor_caudal/")
 
-        uri = "http://www.f4l1.es/server/pluviometro"
+        uri = "http://www.f4l1.es/server/caudal"
         idx = self.servidor.register_namespace(uri)
 
-        self.obj_pluviometro = self.servidor.nodes.objects.add_object(idx, "Pluviometro")
+        self.obj_caudal = self.servidor.nodes.objects.add_object(idx, "Caudal")
 
-        self.variable_pluviometro_dato = self.obj_pluviometro.add_variable(idx, "DatosPluviometro", "NoData")
-        self.variable_pluviometro_dato.set_writable()
+        self.variable_caudal_dato = self.obj_caudal.add_variable(idx, "DatosCaudal", "NoData")
+        self.variable_caudal_dato.set_writable()
 
         self.servidor.start()
 
@@ -40,24 +40,26 @@ class SubscriptionHandler:
         Lee un valor de self.datos_lluvia segun la fecha pasada por argumento
         """
         data = None
-        for row in self.datos_lluvia:
+        for row in self.datos_caudal:
             if row['Fecha'] == fecha:
-                data = row['Lluvia']
 
+                data = row['Caudal']
                 if data == "":
-                    data = "NoData"
+                    data = "Fallo en el Sensor"
                 else:
                     print(f'Fecha: {fecha}')
-
                 # print(fecha, data, type(data)) // Descomentar para ver el data por terminal
+
         if data == None:
             print(f"Fecha {fecha} no registrada")
         return data
 
 
-    def publicar_lluvia(self, dato):
-        self.variable_pluviometro_dato.write_value(dato)
-        print("Publicando dato: ", dato)
+    def publicar_caudal(self, dato):
+        self.variable_caudal_dato.write_value(dato)
+
+        print("Dato registrado: ", dato)
+
 
 
     def datachange_notification(self, node: Node, val, data):
@@ -66,18 +68,18 @@ class SubscriptionHandler:
         This method will be called when the Client received a data change message from the Server.
         """
         hora_str = datetime.fromtimestamp(val).strftime("%d-%m-%y %#H:%M")
-        dato_lluvia = self.leer_valor_por_hora(hora_str)
-        if dato_lluvia is None:
+        dato_caudal = self.leer_valor_por_hora(hora_str)
+        if dato_caudal is None:
             print("ERROR: Hora No registrada")
             return
-        self.publicar_lluvia(dato_lluvia)
+        self.publicar_caudal(dato_caudal)
 
 
 async def main():
     """
     Main task of this Client-Subscription example.
     """
-    client = Client(url="opc.tcp://localhost:4840/freeopcua/servidor_temporal/")
+    client = Client(url="opc.tcp://localhost:4840/servidor_temporal/")
     async with client:
         idx = await client.get_namespace_index(uri="http://www.f4l1.es/server/temporal")
         var = await client.nodes.objects.get_child(f"{idx}:ServidorTemporal/{idx}:HoraSimuladaTimestamp")
