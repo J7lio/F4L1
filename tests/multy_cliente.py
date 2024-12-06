@@ -14,7 +14,7 @@ class SubscriptionHandler:
         self.client_name = client_name
 
         self.servidor = Server()
-        self.servidor.set_endpoint("opc.tcp://0.0.0.0:4846/f4l1/servidor_integracion/")
+        self.servidor.set_endpoint("opc.tcp://localhost:4843/f4l1/servidor_integracion/")
 
         uri = "http://www.f4l1.es/server/integracion"
         idx = self.servidor.register_namespace(uri)
