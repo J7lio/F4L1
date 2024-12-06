@@ -12,7 +12,7 @@ fecha_hora_obj = datetime.strptime(fecha_hora_inicio_str, "%d-%m-%y %H:%M")
 
 if __name__ == "__main__":
     servidor = Server()
-    servidor.set_endpoint("opc.tcp://0.0.0.0:4840/f4l1/servidor_temporal/")
+    servidor.set_endpoint("opc.tcp://localhost:4840/f4l1/servidor_temporal/")
 
     uri = "http://www.f4l1.es/server/temporal"
     idx = servidor.register_namespace(uri)
@@ -40,5 +40,6 @@ if __name__ == "__main__":
 
             fecha_hora_str = hora_simulada.strftime("%d de %b %H:%M:%S")
             hora_texto.write_value(fecha_hora_str)
+            print("Hora simulada:", fecha_hora_str)
     finally:
         servidor.stop()
