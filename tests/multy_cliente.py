@@ -1,7 +1,7 @@
 import asyncio
 import time
 from datetime import datetime
-
+from asyncua.sync import Server
 from asyncua import Client, Node
 
 cambio_hora = False
@@ -12,6 +12,25 @@ caudal = 0
 class SubscriptionHandler:
     def __init__(self, client_name):
         self.client_name = client_name
+
+        self.servidor = Server()
+        self.servidor.set_endpoint("opc.tcp://0.0.0.0:4846/f4l1/servidor_integracion/")
+
+        uri = "http://www.f4l1.es/server/integracion"
+        idx = self.servidor.register_namespace(uri)
+
+        self.obj_integracion = self.servidor.nodes.objects.add_object(idx, "Integracion")
+
+        self.variable_dato_pluviometro = self.obj_integracion.add_variable(idx, "DatosPluviometroIntegracion", "NoData")
+        self.variable_dato_pluviometro.set_writable()
+
+        self.hora_numerica_temporal = self.obj_integracion.add_variable(idx, "HoraTemporal", datetime.now().timestamp())
+        self.hora_numerica_temporal.set_writable()
+
+        self.variable_dato_caudal = self.obj_integracion.add_variable(idx, "DatosCaudalIntegracion", "NoData")
+        self.hora_numerica_temporal.set_writable()
+
+        self.servidor.start()
 
     def datachange_notification(self, node: Node, val, data):
         global hora, lluvia, caudal, cambio_hora
@@ -74,5 +93,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-
