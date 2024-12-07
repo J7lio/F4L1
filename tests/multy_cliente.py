@@ -47,7 +47,7 @@ async def imprimir_variables():
     """
     Tarea principal para imprimir las variables leídas en un bucle.
     """
-    global hora, lluvia, caudal, cambio_hora
+    global cambio_hora
     while True:
         if cambio_hora:
             print(f"Hora: {datetime.fromtimestamp(hora)}, Lluvia: {lluvia}, Caudal: {caudal}")
@@ -56,7 +56,6 @@ async def imprimir_variables():
 
 
 async def main():
-    global cambio_hora
     url_servidor_temporal = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
     url_servidor_pluviometro = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
     url_servidor_caudal = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"

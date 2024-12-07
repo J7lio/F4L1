@@ -42,22 +42,19 @@ class SubscriptionHandler:
         data = None
         for row in self.datos_caudal:
             if row['Fecha'] == fecha:
-
                 data = row['Caudal']
-                if data == "":
-                    data = "Fallo en el Sensor"
-                else:
-                    print(f'Fecha: {fecha}')
-                # print(fecha, data, type(data)) // Descomentar para ver el data por terminal
+                break
 
-        if data == None:
-            print(f"Fecha {fecha} no registrada")
+        if data == "":
+            data = "Fallo Sensor"
+        elif data is None:
+            data = "Hora No Registrada"
+
         return data
 
 
     def publicar_caudal(self, dato):
         self.variable_caudal_dato.write_value(dato)
-
         print("Dato registrado: ", dato)
 
 
@@ -69,9 +66,6 @@ class SubscriptionHandler:
         """
         hora_str = datetime.fromtimestamp(val).strftime("%d-%m-%y %#H:%M")
         dato_caudal = self.leer_valor_por_hora(hora_str)
-        if dato_caudal is None:
-            print("ERROR: Hora No registrada")
-            return
         self.publicar_caudal(dato_caudal)
 
 
