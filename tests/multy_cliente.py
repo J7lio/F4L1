@@ -13,27 +13,7 @@ class SubscriptionHandler:
     def __init__(self, client_name):
         self.client_name = client_name
 
-        self.servidor = Server()
-        self.servidor.set_endpoint("opc.tcp://localhost:4843/f4l1/servidor_integracion/")
 
-        uri = "http://www.f4l1.es/server/integracion"
-        idx = self.servidor.register_namespace(uri)
-
-        self.obj_integracion = self.servidor.nodes.objects.add_object(idx, "Integracion")
-
-        self.variable_dato_pluviometro = self.obj_integracion.add_variable(idx, "DatosPluviometroIntegracion", "NoData")
-        self.variable_dato_pluviometro.set_writable()
-
-        self.hora_numerica_temporal = self.obj_integracion.add_variable(idx, "HoraTemporal", datetime.now().timestamp())
-        self.hora_numerica_temporal.set_writable()
-
-        self.variable_dato_caudal = self.obj_integracion.add_variable(idx, "DatosCaudalIntegracion", "NoData")
-        self.hora_numerica_temporal.set_writable()
-
-        self.estado_sistema_alerta = self.obj_integracion.add_variable(idx, "EstadoSistemaAlerta", "")
-        self.estado_sistema_alerta.set_writable()
-
-        self.servidor.start()
 
     def datachange_notification(self, node: Node, val, data):
         global hora, lluvia, caudal, cambio_hora
@@ -68,26 +48,54 @@ async def client_task(client_name, server_url, namespace,  array_variable_path):
 
 async def imprimir_variables():
     global hora, lluvia, caudal, cambio_hora
-    global handler
+    global variable_dato_pluviometro, hora_numerica_temporal, variable_dato_caudal, estado_sistema_alerta
+
     while True:
         if cambio_hora:
-            estado_alerta = "NO ALERTA"
-            if lluvia > 4.14 and caudal > 8.33:
+            lluvia_float = float(lluvia.replace(',', '.'))
+            caudal_float = float(caudal.replace(',', '.'))
+            if lluvia_float > 4.14 and caudal_float > 45.000:
                 estado_alerta = "ESTADO DE ALERTA"
 
-            print(f"Hora : {hora}, Pluviometro : {lluvia}, Caudal : {caudal}  -> Estado de alerta: {estado_alerta}")
+            else:
+                estado_alerta = "NO ALERTA"
 
-            await handler.variable_dato_pluviometro.write_value(lluvia)
-            await handler.hora_numerica_temporal.write_value(hora)
-            await handler.variable_dato_caudal.write_value(caudal)
-            await handler.estado_sistema_alerta.write_value(estado_alerta)
+            hora_num = datetime.fromtimestamp(hora)
+            print(f"Hora : {hora_num}, Pluviometro : {lluvia}, Caudal : {caudal}  -> Estado : {estado_alerta}")
+
+            variable_dato_pluviometro.write_value(lluvia)
+            hora_numerica_temporal.write_value(hora)
+            variable_dato_caudal.write_value(caudal)
+            estado_sistema_alerta.write_value(estado_alerta)
 
             cambio_hora = False
         await asyncio.sleep(0.1)
 
 
 async def main():
-    global cambio_hora
+    global cambio_hora, variable_dato_pluviometro,hora_numerica_temporal, variable_dato_caudal, estado_sistema_alerta
+    # Crear y arrancar el servidor una sola vez
+    servidor_integracion = Server()
+    servidor_integracion.set_endpoint("opc.tcp://localhost:4843/f4l1/servidor_integracion/")
+    uri = "http://www.f4l1.es/server/integracion"
+    idx = servidor_integracion.register_namespace(uri)
+    obj_integracion = servidor_integracion.nodes.objects.add_object(idx, "Integracion")
+
+    # Crear variables en el servidor
+    variable_dato_pluviometro = obj_integracion.add_variable(idx, "DatosPluviometroIntegracion", "NoData")
+    variable_dato_pluviometro.set_writable()
+
+    hora_numerica_temporal = obj_integracion.add_variable(idx, "HoraTemporal", datetime.now().timestamp())
+    hora_numerica_temporal.set_writable()
+
+    variable_dato_caudal = obj_integracion.add_variable(idx, "DatosCaudalIntegracion", "NoData")
+    variable_dato_caudal.set_writable()
+
+    estado_sistema_alerta = obj_integracion.add_variable(idx, "EstadoSistemaAlerta", "")
+    estado_sistema_alerta.set_writable()
+
+    servidor_integracion.start()
+
     url_servidor_temporal = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
     url_servidor_pluviometro = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
     url_servidor_caudal = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
