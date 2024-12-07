@@ -30,6 +30,9 @@ class SubscriptionHandler:
         self.variable_dato_caudal = self.obj_integracion.add_variable(idx, "DatosCaudalIntegracion", "NoData")
         self.hora_numerica_temporal.set_writable()
 
+        self.estado_sistema_alerta = self.obj_integracion.add_variable(idx, "EstadoSistemaAlerta", "")
+        self.estado_sistema_alerta.set_writable()
+
         self.servidor.start()
 
     def datachange_notification(self, node: Node, val, data):
@@ -45,6 +48,7 @@ class SubscriptionHandler:
 
 
 async def client_task(client_name, server_url, namespace,  array_variable_path):
+    global handler
     async with Client(url=server_url) as client:
         idx = await client.get_namespace_index(namespace)
 
@@ -63,15 +67,23 @@ async def client_task(client_name, server_url, namespace,  array_variable_path):
 
 
 async def imprimir_variables():
-    """
-    Tarea principal para imprimir las variables leídas en un bucle.
-    """
     global hora, lluvia, caudal, cambio_hora
+    global handler
     while True:
         if cambio_hora:
-            print(f"Hora: {datetime.fromtimestamp(hora)}, Lluvia: {lluvia}, Caudal: {caudal}")
+            estado_alerta = "NO ALERTA"
+            if lluvia > 4.14 and caudal > 8.33:
+                estado_alerta = "ESTADO DE ALERTA"
+
+            print(f"Hora : {hora}, Pluviometro : {lluvia}, Caudal : {caudal}  -> Estado de alerta: {estado_alerta}")
+
+            await handler.variable_dato_pluviometro.write_value(lluvia)
+            await handler.hora_numerica_temporal.write_value(hora)
+            await handler.variable_dato_caudal.write_value(caudal)
+            await handler.estado_sistema_alerta.write_value(estado_alerta)
+
             cambio_hora = False
-        await asyncio.sleep(0.1)  # Ajusta el intervalo según sea necesario
+        await asyncio.sleep(0.1)
 
 
 async def main():
