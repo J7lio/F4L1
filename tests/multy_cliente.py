@@ -66,7 +66,7 @@ async def imprimir_variables():
 
             #print(type(hora))
             print(f"Hora : {hora}, Pluviometro : {lluvia}, Caudal : {caudal}  -> Estado : {estado_alerta}")
-
+            #dssfdsfesfdfdf
             variable_dato_pluviometro.write_value(lluvia_float)
             hora_texto_temporal.write_value(hora)
             variable_dato_caudal.write_value(caudal_float)
