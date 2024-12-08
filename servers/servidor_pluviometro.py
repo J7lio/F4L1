@@ -43,15 +43,13 @@ class SubscriptionHandler:
         for row in self.datos_lluvia:
             if row['Fecha'] == fecha:
                 data = row['Lluvia']
+                break
 
-                if data == "":
-                    data = "NoData"
-                else:
-                    print(f'Fecha: {fecha}')
+        if data == "":
+            data = "Fallo Sensor"
+        elif data is None:
+            data = "Hora No Registrada"
 
-                # print(fecha, data, type(data)) // Descomentar para ver el data por terminal
-        if data == None:
-            print(f"Fecha {fecha} no registrada")
         return data
 
 
@@ -67,9 +65,6 @@ class SubscriptionHandler:
         """
         hora_str = datetime.fromtimestamp(val).strftime("%d-%m-%y %#H:%M")
         dato_lluvia = self.leer_valor_por_hora(hora_str)
-        if dato_lluvia is None:
-            print("ERROR: Hora No registrada")
-            return
         self.publicar_lluvia(dato_lluvia)
 
 
