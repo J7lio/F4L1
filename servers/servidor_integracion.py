@@ -46,17 +46,23 @@ async def client_task(client_name, server_url, namespace,  array_variable_path):
             await subscription.delete()
 
 
+def transformar_a_float(var):
+    try:
+        var = float(var.replace(',', '.'))
+    except ValueError:
+        return -1.0
+
+    return var
+
+
 async def imprimir_variables():
     global hora, lluvia, caudal, cambio_hora
     global variable_dato_pluviometro, hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta
 
     while True:
         if cambio_hora:
-            lluvia_float = float(lluvia.replace(',', '.'))
-            if caudal == "Fallo en el Sensor":
-                caudal_float = -1.0  #-1.0 == fallo en el sensor
-            else:
-                caudal_float = float(caudal.replace(',', '.'))
+            lluvia_float = transformar_a_float(lluvia)
+            caudal_float = transformar_a_float(caudal)
 
             if (lluvia_float > 4.14) and (caudal_float > 45.000 or caudal_float == -1.0):
                 estado_alerta = "ESTADO DE ALERTA"
@@ -77,7 +83,7 @@ async def imprimir_variables():
 
 
 async def main():
-    global cambio_hora, variable_dato_pluviometro,hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta
+    global cambio_hora, variable_dato_pluviometro, hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta
     # Crear y arrancar el servidor una sola vez
     servidor_integracion = Server()
     servidor_integracion.set_endpoint("opc.tcp://localhost:4843/f4l1/servidor_integracion/")
