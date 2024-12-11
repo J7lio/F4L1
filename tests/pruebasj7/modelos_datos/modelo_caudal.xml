@@ -22,7 +22,7 @@
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Caudal</Reference>
     </References>
     <Value>
-      <String>NoData</String> <!-- Valor predeterminado: NoData -->
+      <String>NoData</String>
     </Value>
   </UAVariable>
 
@@ -35,7 +35,7 @@
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Caudal</Reference>
     </References>
     <Value>
-      <Boolean>false</Boolean> <!-- Valor predeterminado: NoData -->
+      <Boolean>false</Boolean>
     </Value>
   </UAVariable>
 

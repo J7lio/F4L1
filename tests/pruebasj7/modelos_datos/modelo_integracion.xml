@@ -22,7 +22,7 @@
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
     </References>
     <Value>
-      <String>00:00:00</String> <!-- Valor predeterminado: 00:00:00 -->
+      <String>00:00:00</String>
     </Value>
   </UAVariable>
 
@@ -35,7 +35,7 @@
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
     </References>
     <Value>
-      <Double>0.0</Double> <!-- Valor predeterminado: 0.0 -->
+      <Double>0.0</Double>
     </Value>
   </UAVariable>
 
@@ -48,7 +48,7 @@
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
     </References>
     <Value>
-      <Double>0.0</Double> <!-- Valor predeterminado: 0.0 -->
+      <Double>0.0</Double>
     </Value>
   </UAVariable>
 
@@ -61,7 +61,33 @@
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
     </References>
     <Value>
-      <String></String> <!-- Valor predeterminado: vacío -->
+      <String></String>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable EstadoSensorCaudal -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorCaudalIntegracion" BrowseName="2:EstadoSensorCaudalIntegracion" DataType="Boolean">
+    <DisplayName>EstadoSensorCaudalIntegracion</DisplayName>
+    <Description>Estado del sensor de caudal (valor booleano 1 bien 0 mal)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <Boolean>false</Boolean>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable EstadoSensorPluviometro -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorPluviometroIntegracion" BrowseName="2:EstadoSensorPluviometroIntegracion" DataType="Boolean">
+    <DisplayName>EstadoSensorPluviometroIntegracion</DisplayName>
+    <Description>Estado del sensor del pluviometro (valor booleano 1 bien 0 mal)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <Boolean>false</Boolean>
     </Value>
   </UAVariable>
 
