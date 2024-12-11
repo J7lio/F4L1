@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Objeto principal -->
+  <UAObject NodeId="ns=2;s=ServidorTemporal" BrowseName="2:ServidorTemporal">
+    <DisplayName>ServidorTemporal</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=61</Reference> <!-- FolderType -->
+      <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference> <!-- Objects Folder -->
+    </References>
+  </UAObject>
+
+  <!-- Variable HoraSimuladaNumerica -->
+  <UAVariable NodeId="ns=2;s=HoraSimuladaNumerica" BrowseName="2:HoraSimuladaNumerica" DataType="Double">
+    <DisplayName>HoraSimuladaNumerica</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>0.0</Double> <!-- Este valor será reemplazado dinámicamente -->
+    </Value>
+  </UAVariable>
+
+  <!-- Variable HoraSimuladaTexto -->
+  <UAVariable NodeId="ns=2;s=HoraSimuladaTexto" BrowseName="2:HoraSimuladaTexto" DataType="String">
+    <DisplayName>HoraSimuladaTexto</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <String>00:00:00</String>
+    </Value>
+  </UAVariable>
+
+</UANodeSet>

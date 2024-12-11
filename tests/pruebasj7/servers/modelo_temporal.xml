@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Objeto principal -->
+  <UAObject NodeId="ns=2;s=ServidorTemporal" BrowseName="2:ServidorTemporal">
+    <DisplayName>ServidorTemporal</DisplayName>
+    <Description>Carpeta que incluye los datos del Servidor Temporal</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=61</Reference> <!-- FolderType -->
+      <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference> <!-- Objects Folder -->
+    </References>
+  </UAObject>
+
+  <!-- Variable HoraSimuladaNumerica -->
+  <UAVariable NodeId="ns=2;s=HoraSimuladaNumerica" BrowseName="2:HoraSimuladaNumerica" DataType="Double">
+    <DisplayName>HoraSimuladaNumerica</DisplayName>
+    <Description>La hora simulada en formato UNIX</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>0.0</Double> <!-- Este valor será reemplazado dinámicamente -->
+    </Value>
+  </UAVariable>
+
+  <!-- Variable HoraSimuladaTexto -->
+  <UAVariable NodeId="ns=2;s=HoraSimuladaTexto" BrowseName="2:HoraSimuladaTexto" DataType="String">
+    <DisplayName>HoraSimuladaTexto</DisplayName>
+    <Description>La hora simulada en formato natural ej(29 de Oct 07:20:00)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <String>00:00:00</String>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable PorcentajeDelDia29 -->
+  <UAVariable NodeId="ns=2;s=PorcentajeDelDia29" BrowseName="2:PorcentajeDelDia29" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>PorcentajeDelDia29</DisplayName>
+    <Description>Cambia la hora del dia, 0 -> 00:00 del 29, 1 -> 00:00 del 30, Cambiable en el Browser</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>0.0</Double> <!-- Este valor será reemplazado dinámicamente -->
+    </Value>
+  </UAVariable>
+
+  <!-- Variable DeltaTiempo -->
+  <UAVariable NodeId="ns=2;s=DeltaTiempo" BrowseName="2:DeltaTiempo" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DeltaTiempo</DisplayName>
+    <Description>De cuanto en cuanto aumenta la hora en segundos, Cambiable en el Browser</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>300.0</Double> <!-- Valor predeterminado: delta_tiempo -->
+    </Value>
+  </UAVariable>
+
+  <!-- Variable DuracionSimuladaDia -->
+  <UAVariable NodeId="ns=2;s=DuracionSimuladaDia" BrowseName="2:DuracionSimuladaDia" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DuracionSimuladaDia</DisplayName>
+    <Description>Tiempo en segundos que tarda en simularse un dia, Cambiable en el Browser</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>600.0</Double> <!-- Valor predeterminado: duracion_simulada_dia -->
+    </Value>
+  </UAVariable>
+
+</UANodeSet>
