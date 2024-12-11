@@ -19,21 +19,21 @@ class ManejadorCambios:
     def datachange_notification(self, node, val, data):
         global delta_tiempo, duracion_simulada_dia, porcentaje_dia, actualizar_hora
         print(f"La variable '{node}' cambió a {val}")
-        if str(node) == "ns=2;i=4": # porcentaje_dia
+        if str(node) == "ns=2;s=PorcentajeDelDia29": # porcentaje_dia
             try:
                 porcentaje_dia = float(val)
                 actualizar_hora = True
             except ValueError:
                 print("Error: Valor del delta_tiempo no es valido")
 
-        if str(node) == "ns=2;i=5": # delta_tiempo
+        if str(node) == "ns=2;s=DeltaTiempo": # delta_tiempo
             try:
                 delta_tiempo = float(val)
             except ValueError:
                 print("Error: Valor del delta_tiempo no es valido")
                 return
 
-        if str(node) == "ns=2;i=6": # duracion_simulada_dia
+        if str(node) == "ns=2;s=DuracionSimuladaDia": # duracion_simulada_dia
             try:
                 duracion_simulada_dia = float(val)
             except ValueError:

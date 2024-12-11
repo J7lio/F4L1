@@ -11,6 +11,10 @@ def leer_csv(ruta_csv):
         return [fila for fila in lector_csv]  # Devuelve las filas del csv en una lista de diccionarios
 
 
+def importar_modelo_desde_xml(servidor, ruta_xml):
+    servidor.import_xml(ruta_xml)
+
+
 class SubscriptionHandler:
     """
     The SubscriptionHandler is used to handle the data that is received for the subscription.
@@ -27,10 +31,11 @@ class SubscriptionHandler:
         uri = "http://www.f4l1.es/server/caudal"
         idx = self.servidor.register_namespace(uri)
 
-        self.obj_caudal = self.servidor.nodes.objects.add_object(idx, "Caudal")
+        ruta_xml = "modelo_caudal.xml"
+        importar_modelo_desde_xml(self.servidor, ruta_xml)
 
-        self.variable_caudal_dato = self.obj_caudal.add_variable(idx, "DatosCaudal", "NoData")
-        self.variable_caudal_dato.set_writable()
+        self.obj_caudal = self.servidor.nodes.objects.get_child([f"{idx}:Caudal"])
+        self.variable_caudal_dato = self.obj_caudal.get_child([f"{idx}:DatosCaudal"])
 
         self.servidor.start()
 

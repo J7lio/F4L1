@@ -11,6 +11,10 @@ def leer_csv(ruta_csv):
         return [fila for fila in lector_csv]  # Devuelve las filas del csv en una lista de diccionarios
 
 
+def importar_modelo_desde_xml(servidor, ruta_xml):
+    servidor.import_xml(ruta_xml)
+
+
 class SubscriptionHandler:
     """
     The SubscriptionHandler is used to handle the data that is received for the subscription.
@@ -27,10 +31,13 @@ class SubscriptionHandler:
         uri = "http://www.f4l1.es/server/pluviometro"
         idx = self.servidor.register_namespace(uri)
 
-        self.obj_pluviometro = self.servidor.nodes.objects.add_object(idx, "Pluviometro")
+        # Importar modelo desde XML
+        ruta_xml = "modelo_pluviometro.xml"
+        importar_modelo_desde_xml(self.servidor, ruta_xml)
 
-        self.variable_pluviometro_dato = self.obj_pluviometro.add_variable(idx, "DatosPluviometro", "NoData")
-        self.variable_pluviometro_dato.set_writable()
+        # Obtener referencias a las variables importadas
+        self.obj_pluviometro = self.servidor.nodes.objects.get_child([f"{idx}:Pluviometro"])
+        self.variable_pluviometro_dato = self.obj_pluviometro.get_child([f"{idx}:DatosPluviometro"])
 
         self.servidor.start()
 
