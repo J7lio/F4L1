@@ -20,26 +20,8 @@
             <item>
                <serverUri>urn:freeopcua:python:server</serverUri>
                <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-               <nodeIdValue>i=2</nodeIdValue>
+               <nodeIdValue>s=DeltaTiempo</nodeIdValue>
                <dataType>Double</dataType>
-               <signalName>HoraSimuladaNumerica</signalName>
-               <currentWrite>true</currentWrite>
-               <loggingEnabled>false</loggingEnabled>
-            </item>
-            <item>
-               <serverUri>urn:freeopcua:python:server</serverUri>
-               <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-               <nodeIdValue>i=3</nodeIdValue>
-               <dataType>String</dataType>
-               <signalName>HoraSimuladaTexto</signalName>
-               <currentWrite>true</currentWrite>
-               <loggingEnabled>false</loggingEnabled>
-            </item>
-            <item>
-               <serverUri>urn:freeopcua:python:server</serverUri>
-               <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-               <nodeIdValue>i=5</nodeIdValue>
-               <dataType>Int64</dataType>
                <signalName>DeltaTiempo</signalName>
                <currentWrite>true</currentWrite>
                <loggingEnabled>false</loggingEnabled>
@@ -47,8 +29,8 @@
             <item>
                <serverUri>urn:freeopcua:python:server</serverUri>
                <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-               <nodeIdValue>i=6</nodeIdValue>
-               <dataType>Int64</dataType>
+               <nodeIdValue>s=DuracionSimuladaDia</nodeIdValue>
+               <dataType>Double</dataType>
                <signalName>DuracionSimuladaDia</signalName>
                <currentWrite>true</currentWrite>
                <loggingEnabled>false</loggingEnabled>
@@ -56,7 +38,25 @@
             <item>
                <serverUri>urn:freeopcua:python:server</serverUri>
                <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-               <nodeIdValue>i=4</nodeIdValue>
+               <nodeIdValue>s=HoraSimuladaNumerica</nodeIdValue>
+               <dataType>Double</dataType>
+               <signalName>HoraSimuladaNumerica</signalName>
+               <currentWrite>false</currentWrite>
+               <loggingEnabled>false</loggingEnabled>
+            </item>
+            <item>
+               <serverUri>urn:freeopcua:python:server</serverUri>
+               <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
+               <nodeIdValue>s=HoraSimuladaTexto</nodeIdValue>
+               <dataType>String</dataType>
+               <signalName>HoraSimuladaTexto</signalName>
+               <currentWrite>false</currentWrite>
+               <loggingEnabled>false</loggingEnabled>
+            </item>
+            <item>
+               <serverUri>urn:freeopcua:python:server</serverUri>
+               <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
+               <nodeIdValue>s=PorcentajeDelDia29</nodeIdValue>
                <dataType>Double</dataType>
                <signalName>PorcentajeDelDia29</signalName>
                <currentWrite>true</currentWrite>
@@ -93,10 +93,10 @@
                      <item>
                         <serverUri>urn:freeopcua:python:server</serverUri>
                         <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-                        <nodeIdValue>i=3</nodeIdValue>
+                        <nodeIdValue>s=HoraSimuladaTexto</nodeIdValue>
                         <dataType>String</dataType>
                         <signalName>HoraSimuladaTexto</signalName>
-                        <currentWrite>true</currentWrite>
+                        <currentWrite>false</currentWrite>
                         <loggingEnabled>false</loggingEnabled>
                      </item>
                   </items>
@@ -120,10 +120,10 @@
                      <item>
                         <serverUri>urn:freeopcua:python:server</serverUri>
                         <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-                        <nodeIdValue>i=2</nodeIdValue>
+                        <nodeIdValue>s=HoraSimuladaNumerica</nodeIdValue>
                         <dataType>Double</dataType>
                         <signalName>HoraSimuladaNumerica</signalName>
-                        <currentWrite>true</currentWrite>
+                        <currentWrite>false</currentWrite>
                         <loggingEnabled>false</loggingEnabled>
                      </item>
                   </items>
@@ -171,8 +171,8 @@
                      <item>
                         <serverUri>urn:freeopcua:python:server</serverUri>
                         <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-                        <nodeIdValue>i=5</nodeIdValue>
-                        <dataType>Int64</dataType>
+                        <nodeIdValue>s=DeltaTiempo</nodeIdValue>
+                        <dataType>Double</dataType>
                         <signalName>DeltaTiempo</signalName>
                         <currentWrite>true</currentWrite>
                         <loggingEnabled>false</loggingEnabled>
@@ -222,8 +222,8 @@
                      <item>
                         <serverUri>urn:freeopcua:python:server</serverUri>
                         <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-                        <nodeIdValue>i=6</nodeIdValue>
-                        <dataType>Int64</dataType>
+                        <nodeIdValue>s=DuracionSimuladaDia</nodeIdValue>
+                        <dataType>Double</dataType>
                         <signalName>DuracionSimuladaDia</signalName>
                         <currentWrite>true</currentWrite>
                         <loggingEnabled>false</loggingEnabled>
@@ -273,7 +273,7 @@
                      <item>
                         <serverUri>urn:freeopcua:python:server</serverUri>
                         <namespaceUri>http://www.f4l1.es/server/temporal</namespaceUri>
-                        <nodeIdValue>i=4</nodeIdValue>
+                        <nodeIdValue>s=PorcentajeDelDia29</nodeIdValue>
                         <dataType>Double</dataType>
                         <signalName>PorcentajeDelDia29</signalName>
                         <currentWrite>true</currentWrite>

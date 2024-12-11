@@ -82,6 +82,10 @@ async def imprimir_variables():
         await asyncio.sleep(0.1)
 
 
+def importar_modelo_desde_xml(servidor, ruta_xml):
+    servidor.import_xml(ruta_xml)
+
+
 async def main():
     global cambio_hora, variable_dato_pluviometro, hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta
     # Crear y arrancar el servidor una sola vez
@@ -89,20 +93,16 @@ async def main():
     servidor_integracion.set_endpoint("opc.tcp://localhost:4843/f4l1/servidor_integracion/")
     uri = "http://www.f4l1.es/server/integracion"
     idx = servidor_integracion.register_namespace(uri)
-    obj_integracion = servidor_integracion.nodes.objects.add_object(idx, "Integracion")
 
-    # Crear variables en el servidor
-    variable_dato_pluviometro = obj_integracion.add_variable(idx, "DatosPluviometroIntegracion", 0.0)
-    variable_dato_pluviometro.set_writable()
+    ruta_xml = "modelo_integracion.xml"
+    importar_modelo_desde_xml(servidor_integracion, ruta_xml)
 
-    hora_texto_temporal = obj_integracion.add_variable(idx, "HoraTemporal", "00:00:00")
-    hora_texto_temporal.set_writable()
+    obj_integracion = servidor_integracion.nodes.objects.get_child([f"{idx}:Integracion"])
 
-    variable_dato_caudal = obj_integracion.add_variable(idx, "DatosCaudalIntegracion", 0.0)
-    variable_dato_caudal.set_writable()
-
-    estado_sistema_alerta = obj_integracion.add_variable(idx, "EstadoSistemaAlerta", "")
-    estado_sistema_alerta.set_writable()
+    hora_texto_temporal = obj_integracion.get_child([f"{idx}:HoraTemporal"])
+    variable_dato_pluviometro = obj_integracion.get_child([f"{idx}:DatosPluviometroIntegracion"])
+    variable_dato_caudal = obj_integracion.get_child([f"{idx}:DatosCaudalIntegracion"])
+    estado_sistema_alerta = obj_integracion.get_child([f"{idx}:EstadoSistemaAlerta"])
 
     servidor_integracion.start()
 
