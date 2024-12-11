@@ -40,46 +40,39 @@
   </UAVariable>
 
   <!-- Variable PorcentajeDelDia29 -->
-  <UAVariable NodeId="ns=2;s=PorcentajeDelDia29" BrowseName="2:PorcentajeDelDia29" DataType="Double">
+  <UAVariable NodeId="ns=2;s=PorcentajeDelDia29" BrowseName="2:PorcentajeDelDia29" DataType="Double" AccessLevel="3" UserAccessLevel="3">
     <DisplayName>PorcentajeDelDia29</DisplayName>
     <Description>Cambia la hora del dia, 0 -> 00:00 del 29, 1 -> 00:00 del 30, Cambiable en el Browser</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
     </References>
-    <AccessLevel>3</AccessLevel> <!-- Permite lectura y escritura -->
-    <UserAccessLevel>3</UserAccessLevel> <!-- Permite lectura y escritura para el usuario -->
     <Value>
       <Double>0.0</Double> <!-- Este valor será reemplazado dinámicamente -->
     </Value>
   </UAVariable>
 
   <!-- Variable DeltaTiempo -->
-  <UAVariable NodeId="ns=2;s=DeltaTiempo" BrowseName="2:DeltaTiempo" DataType="Double">
+  <UAVariable NodeId="ns=2;s=DeltaTiempo" BrowseName="2:DeltaTiempo" DataType="Double" AccessLevel="3" UserAccessLevel="3">
     <DisplayName>DeltaTiempo</DisplayName>
     <Description>De cuanto en cuanto aumenta la hora en segundos, Cambiable en el Browser</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
     </References>
-    <AccessLevel>3</AccessLevel> <!-- Permite lectura y escritura -->
-    <UserAccessLevel>3</UserAccessLevel> <!-- Permite lectura y escritura para el usuario -->
     <Value>
       <Double>300.0</Double> <!-- Valor predeterminado: delta_tiempo -->
     </Value>
   </UAVariable>
 
   <!-- Variable DuracionSimuladaDia -->
-  <UAVariable NodeId="ns=2;s=DuracionSimuladaDia" BrowseName="2:DuracionSimuladaDia" DataType="Double">
+  <UAVariable NodeId="ns=2;s=DuracionSimuladaDia" BrowseName="2:DuracionSimuladaDia" DataType="Double" AccessLevel="3" UserAccessLevel="3">
     <DisplayName>DuracionSimuladaDia</DisplayName>
     <Description>Tiempo en segundos que tarda en simularse un dia, Cambiable en el Browser</Description>
-    <AccessLevel>3</AccessLevel> <!-- Permite lectura y escritura -->
-    <UserAccessLevel>3</UserAccessLevel> <!-- Permite lectura y escritura para el usuario -->
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
     </References>
-
     <Value>
       <Double>600.0</Double> <!-- Valor predeterminado: duracion_simulada_dia -->
     </Value>
