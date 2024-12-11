@@ -38,6 +38,7 @@ class SubscriptionHandler:
         # Obtener referencias a las variables importadas
         self.obj_pluviometro = self.servidor.nodes.objects.get_child([f"{idx}:Pluviometro"])
         self.variable_pluviometro_dato = self.obj_pluviometro.get_child([f"{idx}:DatosPluviometro"])
+        self.variable_estado_sensor = self.obj_pluviometro.get_child([f"{idx}:EstadoSensor"])
 
         self.servidor.start()
 
