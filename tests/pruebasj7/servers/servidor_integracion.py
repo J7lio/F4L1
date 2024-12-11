@@ -120,6 +120,10 @@ async def main():
     variable_dato_pluviometro = obj_integracion.get_child([f"{idx}:DatosPluviometroIntegracion"])
     variable_dato_caudal = obj_integracion.get_child([f"{idx}:DatosCaudalIntegracion"])
     estado_sistema_alerta = obj_integracion.get_child([f"{idx}:EstadoSistemaAlerta"])
+    estado_sensor_pluviometro = obj_integracion.get_child([f"{idx}:EstadoSensorPluviometroIntegracion"])
+    estado_sensor_caudal = obj_integracion.get_child([f"{idx}:EstadoSensorCaudalIntegracion"])
+
+
 
     servidor_integracion.start()
 
@@ -142,6 +146,9 @@ variable_dato_pluviometro = None
 hora_texto_temporal = None
 variable_dato_caudal = None
 estado_sistema_alerta = None
+estado_sensor_pluviometro = None
+estado_sensor_caudal = None
+
 
 if __name__ == "__main__":
     asyncio.run(main())
