@@ -1,8 +1,11 @@
 import asyncio
 import time
 from datetime import datetime
+
 from asyncua.sync import Server
 from asyncua import Client, Node
+from collections import deque
+
 
 cambio_hora = False
 hora = ""
@@ -12,8 +15,6 @@ caudal = 0
 class SubscriptionHandler:
     def __init__(self, client_name):
         self.client_name = client_name
-
-
 
     def datachange_notification(self, node: Node, val, data):
         global hora, lluvia, caudal, cambio_hora
@@ -55,18 +56,34 @@ def transformar_a_float(var):
     return var
 
 
+def hay_alerta(cola_lluvias, caudal):
+    if -1.0 in cola_lluvias or caudal == -1.0:  # Si hay fallo en alguno de los sensores
+        return True
+    elif sum(cola_lluvias) > 50:                # Si se superan los 50 mm/h
+        return True
+    elif caudal > 150:                          # Si se supera el caudal de 150m^3/s
+        return True
+    else:
+        return False
+
+
 async def imprimir_variables():
     global hora, lluvia, caudal, cambio_hora
     global variable_dato_pluviometro, hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta
 
+    cola_lluvias = deque(maxlen=12) # Como la lluvia va cada 5 minutos para conseguir las precipitaciones por hora cogemos las ultimas 60/5 = 12
+
     while True:
         if cambio_hora:
+            time.sleep(0.1) # Margen para evitar leer datos anteriores
+
             lluvia_float = transformar_a_float(lluvia)
             caudal_float = transformar_a_float(caudal)
 
-            if (lluvia_float > 4.14) and (caudal_float > 45.000 or caudal_float == -1.0):
-                estado_alerta = "ESTADO DE ALERTA"
+            cola_lluvias.append(lluvia_float)
 
+            if hay_alerta(cola_lluvias, caudal_float):
+                estado_alerta = "ESTADO DE ALERTA"
             else:
                 estado_alerta = "NO ALERTA"
 
@@ -119,6 +136,12 @@ async def main():
     ]
     await asyncio.gather(*tasks, imprimir_variables())
 
+
+#Definir las variables globales
+variable_dato_pluviometro = None
+hora_texto_temporal = None
+variable_dato_caudal = None
+estado_sistema_alerta = None
 
 if __name__ == "__main__":
     asyncio.run(main())
