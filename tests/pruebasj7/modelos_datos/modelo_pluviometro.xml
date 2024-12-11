@@ -26,16 +26,16 @@
     </Value>
   </UAVariable>
 
-  <!-- Variable DatosPluviometro -->
-  <UAVariable NodeId="ns=2;s=EstadoSensor" BrowseName="2:EstadoSensor" DataType="String" AccessLevel="3" UserAccessLevel="3">
-    <DisplayName>EstadoSensor</DisplayName>
-    <Description>Estado del sensor (formato de texto)</Description>
+  <!-- Variable EstadoSensorPluviometro -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorPluviometro" BrowseName="2:EstadoSensorPluviometro" DataType="Boolean">
+    <DisplayName>EstadoSensorPluviometro</DisplayName>
+    <Description>Estado del sensor del pluviometro (valor booleano 1 bien 0 mal)</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Pluviometro</Reference>
     </References>
     <Value>
-      <String>NoData</String> <!-- Valor predeterminado: NoData -->
+      <Boolean>false</Boolean> <!-- Valor predeterminado: NoData -->
     </Value>
   </UAVariable>
 

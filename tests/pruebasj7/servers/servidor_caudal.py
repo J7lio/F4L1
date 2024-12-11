@@ -20,7 +20,6 @@ class SubscriptionHandler:
     The SubscriptionHandler is used to handle the data that is received for the subscription.
     """
 
-
     def __init__(self):
         self.ruta_csv_caudal = "../data/cincominutales_modificado.csv"
         self.datos_caudal = leer_csv(self.ruta_csv_caudal)
@@ -36,10 +35,9 @@ class SubscriptionHandler:
 
         self.obj_caudal = self.servidor.nodes.objects.get_child([f"{idx}:Caudal"])
         self.variable_caudal_dato = self.obj_caudal.get_child([f"{idx}:DatosCaudal"])
-        self.variable_estado_sensor = self.obj_caudal.get_child([f"{idx}:EstadoSensor"])
+        self.variable_estado_sensor = self.obj_caudal.get_child([f"{idx}:EstadoSensorCaudal"])
 
         self.servidor.start()
-
 
     def leer_valor_por_hora(self, fecha):
         """
@@ -58,12 +56,15 @@ class SubscriptionHandler:
 
         return data
 
-
     def publicar_caudal(self, dato):
         self.variable_caudal_dato.write_value(dato)
         print("Dato registrado: ", dato)
 
-
+    def publicar_error(self, dato):
+        if dato == "Fallo Sensor" or dato == "Hora No Registrada":
+            self.variable_estado_sensor.write_value(False)
+        else:
+            self.variable_estado_sensor.write_value(True)
 
     def datachange_notification(self, node: Node, val, data):
         """
@@ -72,7 +73,9 @@ class SubscriptionHandler:
         """
         hora_str = datetime.fromtimestamp(val).strftime("%d-%m-%y %#H:%M")
         dato_caudal = self.leer_valor_por_hora(hora_str)
+        print(hora_str, dato_caudal)
         self.publicar_caudal(dato_caudal)
+        self.publicar_error(dato_caudal)
 
 
 async def main():

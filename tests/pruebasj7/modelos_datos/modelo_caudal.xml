@@ -26,15 +26,16 @@
     </Value>
   </UAVariable>
 
-    <UAVariable NodeId="ns=2;s=EstadoSensor" BrowseName="2:EstadoSensor" DataType="String" AccessLevel="3" UserAccessLevel="3">
-    <DisplayName>EstadoSensor</DisplayName>
-    <Description>Estado del sensor (formato de texto)</Description>
+  <!-- Variable EstadoSensorCaudal -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorCaudal" BrowseName="2:EstadoSensorCaudal" DataType="Boolean">
+    <DisplayName>EstadoSensorCaudal</DisplayName>
+    <Description>Estado del sensor de caudal (valor booleano 1 bien 0 mal)</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
       <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Caudal</Reference>
     </References>
     <Value>
-      <String>NoData</String> <!-- Valor predeterminado: NoData -->
+      <Boolean>false</Boolean> <!-- Valor predeterminado: NoData -->
     </Value>
   </UAVariable>
 

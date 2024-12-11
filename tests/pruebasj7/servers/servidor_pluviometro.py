@@ -20,7 +20,6 @@ class SubscriptionHandler:
     The SubscriptionHandler is used to handle the data that is received for the subscription.
     """
 
-
     def __init__(self):
         self.ruta_csv_pluviometro = "../data/PluviómetroChiva_29octubre2024.csv"
         self.datos_lluvia = leer_csv(self.ruta_csv_pluviometro)
@@ -38,10 +37,9 @@ class SubscriptionHandler:
         # Obtener referencias a las variables importadas
         self.obj_pluviometro = self.servidor.nodes.objects.get_child([f"{idx}:Pluviometro"])
         self.variable_pluviometro_dato = self.obj_pluviometro.get_child([f"{idx}:DatosPluviometro"])
-        self.variable_estado_sensor = self.obj_pluviometro.get_child([f"{idx}:EstadoSensor"])
+        self.variable_estado_sensor = self.obj_pluviometro.get_child([f"{idx}:EstadoSensorPluviometro"])
 
         self.servidor.start()
-
 
     def leer_valor_por_hora(self, fecha):
         """
@@ -60,11 +58,15 @@ class SubscriptionHandler:
 
         return data
 
-
     def publicar_lluvia(self, dato):
         self.variable_pluviometro_dato.write_value(dato)
         print("Publicando dato: ", dato)
 
+    def publicar_error(self, dato):
+        if dato == "Fallo Sensor" or dato == "Hora No Registrada":
+            self.variable_estado_sensor.write_value(False)
+        else:
+            self.variable_estado_sensor.write_value(True)
 
     def datachange_notification(self, node: Node, val, data):
         """
@@ -74,6 +76,7 @@ class SubscriptionHandler:
         hora_str = datetime.fromtimestamp(val).strftime("%d-%m-%y %#H:%M")
         dato_lluvia = self.leer_valor_por_hora(hora_str)
         self.publicar_lluvia(dato_lluvia)
+        self.publicar_error(dato_lluvia)
 
 
 async def main():
