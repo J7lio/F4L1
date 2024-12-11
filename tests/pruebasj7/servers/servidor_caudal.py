@@ -36,6 +36,7 @@ class SubscriptionHandler:
 
         self.obj_caudal = self.servidor.nodes.objects.get_child([f"{idx}:Caudal"])
         self.variable_caudal_dato = self.obj_caudal.get_child([f"{idx}:DatosCaudal"])
+        self.variable_estado_sensor = self.obj_caudal.get_child([f"{idx}:EstadoSensor"])
 
         self.servidor.start()
 
