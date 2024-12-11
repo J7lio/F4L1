@@ -44,6 +44,18 @@ class ManejadorCambios:
 def cambiar_hora():
     tiempo_del_dia = timedelta(days=1*porcentaje_dia)
     hora_nueva = fecha_hora_obj + tiempo_del_dia
+
+    # Cambiar la hora si no sale multiple de 5 minutos o con segundos, se aproxima hacia abajo
+    minutos = hora_nueva.minute
+    segundos = hora_nueva.second
+    microsecons = hora_nueva.microsecond
+
+    if minutos % 5 != 0:
+        minutos_extra = timedelta(minutes=minutos % 5)
+        hora_nueva -= minutos_extra
+    if segundos != 0 or microsecons != 0:
+        hora_nueva -= timedelta(seconds=segundos, microseconds=microsecons)
+
     return hora_nueva
 
 
@@ -81,11 +93,9 @@ if __name__ == "__main__":
         hora_simulada = fecha_hora_obj
 
         while True:
-
             if actualizar_hora:
                 hora_simulada = cambiar_hora()
                 actualizar_hora = False
-
 
             hora_numerica.write_value(hora_simulada.timestamp())
 
