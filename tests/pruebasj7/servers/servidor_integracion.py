@@ -94,7 +94,7 @@ async def main():
     uri = "http://www.f4l1.es/server/integracion"
     idx = servidor_integracion.register_namespace(uri)
 
-    ruta_xml = "modelo_integracion.xml"
+    ruta_xml = "../modelos_datos/modelo_integracion.xml"
     importar_modelo_desde_xml(servidor_integracion, ruta_xml)
 
     obj_integracion = servidor_integracion.nodes.objects.get_child([f"{idx}:Integracion"])
@@ -118,7 +118,6 @@ async def main():
                     "http://www.f4l1.es/server/caudal" ,["Caudal", "DatosCaudal"]),
     ]
     await asyncio.gather(*tasks, imprimir_variables())
-
 
 
 if __name__ == "__main__":

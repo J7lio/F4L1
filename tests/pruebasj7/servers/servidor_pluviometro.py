@@ -32,7 +32,7 @@ class SubscriptionHandler:
         idx = self.servidor.register_namespace(uri)
 
         # Importar modelo desde XML
-        ruta_xml = "modelo_pluviometro.xml"
+        ruta_xml = "../modelos_datos/modelo_pluviometro.xml"
         importar_modelo_desde_xml(self.servidor, ruta_xml)
 
         # Obtener referencias a las variables importadas

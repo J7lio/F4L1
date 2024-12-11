@@ -59,7 +59,7 @@ if __name__ == "__main__":
     idx = servidor.register_namespace(uri)
 
     # Importar modelo desde XML
-    ruta_xml = "modelo_temporal.xml"
+    ruta_xml = "../modelos_datos/modelo_temporal.xml"
     importar_modelo_desde_xml(servidor, ruta_xml)
 
     # Obtener referencias a las variables importadas
