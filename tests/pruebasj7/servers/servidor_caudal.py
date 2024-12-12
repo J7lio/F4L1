@@ -30,7 +30,7 @@ class SubscriptionHandler:
         uri = "http://www.f4l1.es/server/caudal"
         idx = self.servidor.register_namespace(uri)
 
-        ruta_xml = "../modelos_datos/modelo_caudal.xml"
+        ruta_xml = "../modelos_datos/modelo_datos_total.xml"
         importar_modelo_desde_xml(self.servidor, ruta_xml)
 
         self.obj_caudal = self.servidor.nodes.objects.get_child([f"{idx}:Caudal"])

@@ -126,7 +126,7 @@ async def main():
     uri = "http://www.f4l1.es/server/integracion"
     idx = servidor_integracion.register_namespace(uri)
 
-    ruta_xml = "../modelos_datos/modelo_integracion.xml"
+    ruta_xml = "../modelos_datos/modelo_datos_total.xml"
     importar_modelo_desde_xml(servidor_integracion, ruta_xml)
 
     obj_integracion = servidor_integracion.nodes.objects.get_child([f"{idx}:Integracion"])
@@ -137,7 +137,6 @@ async def main():
     estado_sistema_alerta = obj_integracion.get_child([f"{idx}:EstadoSistemaAlerta"])
     estado_sensor_pluviometro = obj_integracion.get_child([f"{idx}:EstadoSensorPluviometroIntegracion"])
     estado_sensor_caudal = obj_integracion.get_child([f"{idx}:EstadoSensorCaudalIntegracion"])
-
 
 
     servidor_integracion.start()
