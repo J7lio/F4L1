@@ -9,9 +9,9 @@ from collections import deque
 
 cambio_hora = False
 hora = ""
-lluvia = 0
+lluvia = ""
 estado_pluviometro = False
-caudal = 0
+caudal = ""
 estado_caudal = False
 
 class SubscriptionHandler:
@@ -27,6 +27,7 @@ class SubscriptionHandler:
             cambio_hora = True
         if str(node) == "ns=2;s=DatosPluviometro":  # DatosPluviometro
             lluvia = val
+            print(lluvia, type(lluvia))
         if str(node) == "ns=2;s=EstadoSensorPluviometro":  # EstadoSensorPluviometro
             estado_pluviometro = val
         if str(node) == "ns=2;s=DatosCaudal":  # DatosCaudal
@@ -144,6 +145,13 @@ async def main():
     url_servidor_temporal = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
     url_servidor_pluviometro = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
     url_servidor_caudal = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
+
+    """ 
+    url_servidor_temporal = "opc.tcp://10.236.24.13:4840/f4l1/servidor_temporal/"
+    url_servidor_pluviometro = "opc.tcp://10.236.50.190:4841/f4l1/servidor_pluviometro/"
+    url_servidor_caudal = "opc.tcp://10.236.50.152:4842/f4l1/servidor_caudal/"
+    """
+
     tasks = [
         client_task(url_servidor_temporal,
                     "http://www.f4l1.es/server/temporal" ,[["ServidorTemporal", "HoraSimuladaTexto"]]),
