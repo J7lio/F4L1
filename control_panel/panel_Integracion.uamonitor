@@ -53,6 +53,24 @@
                <currentWrite>true</currentWrite>
                <loggingEnabled>false</loggingEnabled>
             </item>
+            <item>
+               <serverUri>urn:freeopcua:python:server</serverUri>
+               <namespaceUri>http://www.f4l1.es/server/integracion</namespaceUri>
+               <nodeIdValue>s=EstadoSensorPluviometroIntegracion</nodeIdValue>
+               <dataType>Boolean</dataType>
+               <signalName>EstadoSensorPluviometroIntegracion</signalName>
+               <currentWrite>false</currentWrite>
+               <loggingEnabled>false</loggingEnabled>
+            </item>
+            <item>
+               <serverUri>urn:freeopcua:python:server</serverUri>
+               <namespaceUri>http://www.f4l1.es/server/integracion</namespaceUri>
+               <nodeIdValue>s=EstadoSensorCaudalIntegracion</nodeIdValue>
+               <dataType>Boolean</dataType>
+               <signalName>EstadoSensorCaudalIntegracion</signalName>
+               <currentWrite>false</currentWrite>
+               <loggingEnabled>false</loggingEnabled>
+            </item>
          </items>
       </signalGroup>
    </groups>
@@ -126,120 +144,6 @@
                      <enableWriteMode>false</enableWriteMode>
                      <fontSize>40</fontSize>
                      <gaugeColor>BLACK</gaugeColor>
-                  </parameters>
-               </gauge>
-               <gauge>
-                  <type>CLASSIC_QUADRANT</type>
-                  <rowIndex>1</rowIndex>
-                  <colIndex>3</colIndex>
-                  <rowSpan>1</rowSpan>
-                  <colSpan>1</colSpan>
-                  <items>
-                     <item>
-                        <serverUri>urn:freeopcua:python:server</serverUri>
-                        <namespaceUri>http://www.f4l1.es/server/integracion</namespaceUri>
-                        <nodeIdValue>s=DatosCaudalIntegracion</nodeIdValue>
-                        <dataType>Double</dataType>
-                        <signalName>DatosCaudalIntegracion</signalName>
-                        <currentWrite>true</currentWrite>
-                        <loggingEnabled>false</loggingEnabled>
-                     </item>
-                  </items>
-                  <parameters>
-                     <title>DatosCaudalIntegracion</title>
-                     <unit></unit>
-                     <scaling>1.0</scaling>
-                     <offset>0.0</offset>
-                     <decimalPlaces>2</decimalPlaces>
-                     <decimalsInTickLabels>0</decimalsInTickLabels>
-                     <reverseScaleDirection>false</reverseScaleDirection>
-                     <alarmLimits>
-                        <lowLowLimit>0.0</lowLowLimit>
-                        <lowLimit>0.0</lowLimit>
-                        <highLimit>0.0</highLimit>
-                        <highHighLimit>0.0</highHighLimit>
-                        <lowLowIsEnabled>false</lowLowIsEnabled>
-                        <lowIsEnabled>false</lowIsEnabled>
-                        <highIsEnabled>false</highIsEnabled>
-                        <highHighIsEnabled>false</highHighIsEnabled>
-                        <showNotifications>false</showNotifications>
-                        <showDialogsFor>ALARMS_AND_WARNINGS</showDialogsFor>
-                        <showDialogsOn>ACTIVATION_AND_DEACTIVATION</showDialogsOn>
-                        <showDialogsMode>MANUAL</showDialogsMode>
-                        <lowLowActivationMessage></lowLowActivationMessage>
-                        <lowLowDeactivationMessage></lowLowDeactivationMessage>
-                        <lowActivationMessage></lowActivationMessage>
-                        <lowDeactivationMessage></lowDeactivationMessage>
-                        <highActivationMessage></highActivationMessage>
-                        <highDeactivationMessage></highDeactivationMessage>
-                        <highHighActivationMessage></highHighActivationMessage>
-                        <highHighDeactivationMessage></highHighDeactivationMessage>
-                        <loggingEnabled>false</loggingEnabled>
-                     </alarmLimits>
-                     <rangeLimits>
-                        <lowLimit>0</lowLimit>
-                        <highLimit>100</highLimit>
-                     </rangeLimits>
-                     <enableWriteMode>false</enableWriteMode>
-                     <showValue>true</showValue>
-                     <gaugeColor>NONE</gaugeColor>
-                  </parameters>
-               </gauge>
-               <gauge>
-                  <type>CLASSIC_QUADRANT</type>
-                  <rowIndex>0</rowIndex>
-                  <colIndex>3</colIndex>
-                  <rowSpan>1</rowSpan>
-                  <colSpan>1</colSpan>
-                  <items>
-                     <item>
-                        <serverUri>urn:freeopcua:python:server</serverUri>
-                        <namespaceUri>http://www.f4l1.es/server/integracion</namespaceUri>
-                        <nodeIdValue>s=DatosPluviometroIntegracion</nodeIdValue>
-                        <dataType>Double</dataType>
-                        <signalName>DatosPluviometroIntegracion</signalName>
-                        <currentWrite>true</currentWrite>
-                        <loggingEnabled>false</loggingEnabled>
-                     </item>
-                  </items>
-                  <parameters>
-                     <title> </title>
-                     <unit></unit>
-                     <scaling>1.0</scaling>
-                     <offset>0.0</offset>
-                     <decimalPlaces>2</decimalPlaces>
-                     <decimalsInTickLabels>0</decimalsInTickLabels>
-                     <reverseScaleDirection>false</reverseScaleDirection>
-                     <alarmLimits>
-                        <lowLowLimit>4.14</lowLowLimit>
-                        <lowLimit>0.0</lowLimit>
-                        <highLimit>0.0</highLimit>
-                        <highHighLimit>0.0</highHighLimit>
-                        <lowLowIsEnabled>true</lowLowIsEnabled>
-                        <lowIsEnabled>false</lowIsEnabled>
-                        <highIsEnabled>false</highIsEnabled>
-                        <highHighIsEnabled>false</highHighIsEnabled>
-                        <showNotifications>false</showNotifications>
-                        <showDialogsFor>ALARMS_AND_WARNINGS</showDialogsFor>
-                        <showDialogsOn>ACTIVATION_AND_DEACTIVATION</showDialogsOn>
-                        <showDialogsMode>MANUAL</showDialogsMode>
-                        <lowLowActivationMessage></lowLowActivationMessage>
-                        <lowLowDeactivationMessage></lowLowDeactivationMessage>
-                        <lowActivationMessage></lowActivationMessage>
-                        <lowDeactivationMessage></lowDeactivationMessage>
-                        <highActivationMessage></highActivationMessage>
-                        <highDeactivationMessage></highDeactivationMessage>
-                        <highHighActivationMessage></highHighActivationMessage>
-                        <highHighDeactivationMessage></highHighDeactivationMessage>
-                        <loggingEnabled>false</loggingEnabled>
-                     </alarmLimits>
-                     <rangeLimits>
-                        <lowLimit>0</lowLimit>
-                        <highLimit>20</highLimit>
-                     </rangeLimits>
-                     <enableWriteMode>false</enableWriteMode>
-                     <showValue>true</showValue>
-                     <gaugeColor>NONE</gaugeColor>
                   </parameters>
                </gauge>
                <gauge>
@@ -317,7 +221,7 @@
                      </item>
                   </items>
                   <parameters>
-                     <title> </title>
+                     <title> DatosCaudal</title>
                      <unit></unit>
                      <scaling>1.0</scaling>
                      <offset>0.0</offset>
@@ -354,6 +258,72 @@
                      <enableWriteMode>false</enableWriteMode>
                      <showValue>true</showValue>
                      <gaugeColor>MEDIUM_TURQUOISE</gaugeColor>
+                  </parameters>
+               </gauge>
+               <gauge>
+                  <type>BOOLEAN</type>
+                  <rowIndex>0</rowIndex>
+                  <colIndex>3</colIndex>
+                  <rowSpan>1</rowSpan>
+                  <colSpan>1</colSpan>
+                  <items>
+                     <item>
+                        <serverUri>urn:freeopcua:python:server</serverUri>
+                        <namespaceUri>http://www.f4l1.es/server/integracion</namespaceUri>
+                        <nodeIdValue>s=EstadoSensorPluviometroIntegracion</nodeIdValue>
+                        <dataType>Boolean</dataType>
+                        <signalName>EstadoSensorPluviometroIntegracion</signalName>
+                        <currentWrite>false</currentWrite>
+                        <loggingEnabled>false</loggingEnabled>
+                     </item>
+                  </items>
+                  <parameters>
+                     <title>EstadoSensorPluviometroIntegracion</title>
+                     <unit></unit>
+                     <scaling>1.0</scaling>
+                     <offset>0.0</offset>
+                     <booleanGaugeSettings>
+                        <colorCombo>GREEN_RED</colorCombo>
+                     </booleanGaugeSettings>
+                     <statusStrings>
+                        <trueText></trueText>
+                        <falseText></falseText>
+                     </statusStrings>
+                     <enableWriteMode>false</enableWriteMode>
+                     <fontSize>40</fontSize>
+                  </parameters>
+               </gauge>
+               <gauge>
+                  <type>BOOLEAN</type>
+                  <rowIndex>1</rowIndex>
+                  <colIndex>3</colIndex>
+                  <rowSpan>1</rowSpan>
+                  <colSpan>1</colSpan>
+                  <items>
+                     <item>
+                        <serverUri>urn:freeopcua:python:server</serverUri>
+                        <namespaceUri>http://www.f4l1.es/server/integracion</namespaceUri>
+                        <nodeIdValue>s=EstadoSensorCaudalIntegracion</nodeIdValue>
+                        <dataType>Boolean</dataType>
+                        <signalName>EstadoSensorCaudalIntegracion</signalName>
+                        <currentWrite>false</currentWrite>
+                        <loggingEnabled>false</loggingEnabled>
+                     </item>
+                  </items>
+                  <parameters>
+                     <title>EstadoSensorCaudalIntegracion</title>
+                     <unit></unit>
+                     <scaling>1.0</scaling>
+                     <offset>0.0</offset>
+                     <booleanGaugeSettings>
+                        <colorCombo>GREEN_RED</colorCombo>
+                     </booleanGaugeSettings>
+                     <statusStrings>
+                        <trueText></trueText>
+                        <falseText></falseText>
+                     </statusStrings>
+                     <enableWriteMode>false</enableWriteMode>
+                     <fontSize>40</fontSize>
                   </parameters>
                </gauge>
             </gauges>
