@@ -103,6 +103,14 @@ if __name__ == "__main__":
             hora_texto.write_value(fecha_hora_str)
             print("Hora simulada:", fecha_hora_str)
 
+            dia_29_str = "29-10-24 0:00"
+            dia_29_obj = datetime.strptime(fecha_hora_inicio_str, "%d-%m-%y %H:%M")
+
+            diff_dia_segundos = hora_simulada.timestamp() - dia_29_obj.timestamp()
+            porcentaje_dia = diff_dia_segundos / 86400
+
+            var_porcentaje_del_dia_29.write_value(porcentaje_dia)
+
             incremento_tiempo = timedelta(seconds=delta_tiempo)
             tiempo_espera = delta_tiempo * duracion_simulada_dia / 86400
             print(f"tiempo_espera: {tiempo_espera}, delta_tiempo: {delta_tiempo}, duracion_simulada_dia {duracion_simulada_dia}")
