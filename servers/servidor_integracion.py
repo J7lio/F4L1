@@ -1,7 +1,4 @@
 import asyncio
-import time
-from datetime import datetime
-
 from asyncua.sync import Server
 from asyncua import Client, Node
 from collections import deque
@@ -11,6 +8,7 @@ ENDPOINT_INTEGRACION = "opc.tcp://localhost:4843/f4l1/servidor_integracion/"
 ENDPOINT_TEMPORAL = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
 ENDPOINT_PLUVIOMETRO = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
 ENDPOINT_CAUDAL = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
+URI_INTEGRACION = "http://www.f4l1.es/server/integracion"
 URI_TEMPORAL = "http://www.f4l1.es/server/temporal"
 URI_PLUVIOMETRO = "http://www.f4l1.es/server/pluviometro"
 URI_CAUDAL = "http://www.f4l1.es/server/caudal"
@@ -45,9 +43,9 @@ class SubscriptionHandler:
             estado_caudal = val
 
 
-async def client_task(server_url, namespace,  array_variables_path):
-    async with Client(url=server_url) as client:
-        variables = []
+async def crear_cliente(server_endpoint, namespace,  array_variables_path):
+    async with Client(url=server_endpoint) as client:
+        variables_cliente = []
         for paths in array_variables_path:
             idx = await client.get_namespace_index(namespace)
 
@@ -55,11 +53,10 @@ async def client_task(server_url, namespace,  array_variables_path):
             variable_path = str(idx) + ":" + separator.join(paths) #Para que tenga el formato idx:p1/idx:p2
 
             variable = await client.nodes.objects.get_child(variable_path)
-            print(variable)
-            variables.append(variable)
+            variables_cliente.append(variable)
         handler = SubscriptionHandler()
         subscription = await client.create_subscription(100, handler)
-        await subscription.subscribe_data_change(variables)
+        await subscription.subscribe_data_change(variables_cliente)
         try:
             while True:
                 await asyncio.sleep(1)  # Mantén la conexión activa
@@ -77,22 +74,18 @@ def transformar_a_float(var):
 
 
 def hay_alerta(cola_lluvias, caudal):
-    if -1.0 in cola_lluvias or caudal == -1.0:  # Si hay fallo en alguno de los sensores
-        print("Alarma por fallo en los sensores.")
+    if not estado_pluviometro or not estado_caudal:  # Si hay fallo en alguno de los sensores
         return True
     elif sum(cola_lluvias) > 50:                # Si se superan los 50 mm/h
-        print("Alarma por lluvias.")
         return True
     elif caudal > 150:                          # Si se supera el caudal de 150m^3/s
-        print("Alarma por caudal.")
         return True
     else:
         return False
 
 
-async def imprimir_variables():
+async def imprimir_variables(variables):
     global hora, lluvia, caudal, cambio_hora
-    global variable_dato_pluviometro, hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta
 
     cola_lluvias = deque(maxlen=12) # Como la lluvia va cada 5 minutos para conseguir las precipitaciones por hora cogemos las ultimas 60/5 = 12
 
@@ -111,53 +104,50 @@ async def imprimir_variables():
                 estado_alerta = "NO ALERTA"
 
             print(f"Hora : {hora}, Pluviometro : {lluvia}, Caudal : {caudal}  -> Estado : {estado_alerta}")
-            variable_dato_pluviometro.write_value(lluvia_float)
-            hora_texto_temporal.write_value(hora)
-            variable_dato_caudal.write_value(caudal_float)
-            estado_sistema_alerta.write_value(estado_alerta)
-            estado_sensor_pluviometro.write_value(estado_pluviometro)
-            estado_sensor_caudal.write_value(estado_caudal)
+
+            variables["hora_texto_temporal"].write_value(hora)
+            variables["variable_dato_pluviometro"].write_value(lluvia_float)
+            variables["variable_dato_caudal"].write_value(caudal_float)
+            variables["estado_sensor_pluviometro"].write_value(estado_pluviometro)
+            variables["estado_sensor_caudal"].write_value(estado_caudal)
+            variables["estado_sistema_alerta"].write_value(estado_alerta)
 
             cambio_hora = False
         await asyncio.sleep(0.1)
 
 
-async def main():
-    global cambio_hora, variable_dato_pluviometro, hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta, estado_sensor_pluviometro, estado_sensor_caudal
-    # Crear y arrancar el servidor una sola vez
+def configurar_servidor_integracion():
     servidor_integracion = Server()
     servidor_integracion.set_endpoint(ENDPOINT_INTEGRACION)
-    uri = "http://www.f4l1.es/server/integracion"
-    idx = servidor_integracion.register_namespace(uri)
-
+    idx = servidor_integracion.register_namespace(URI_INTEGRACION)
     servidor_integracion.import_xml(RUTA_XML)
-
     obj_integracion = servidor_integracion.nodes.objects.get_child([f"{idx}:Integracion"])
 
-    hora_texto_temporal = obj_integracion.get_child([f"{idx}:HoraTemporal"])
-    variable_dato_pluviometro = obj_integracion.get_child([f"{idx}:DatosPluviometroIntegracion"])
-    variable_dato_caudal = obj_integracion.get_child([f"{idx}:DatosCaudalIntegracion"])
-    estado_sistema_alerta = obj_integracion.get_child([f"{idx}:EstadoSistemaAlerta"])
-    estado_sensor_pluviometro = obj_integracion.get_child([f"{idx}:EstadoSensorPluviometroIntegracion"])
-    estado_sensor_caudal = obj_integracion.get_child([f"{idx}:EstadoSensorCaudalIntegracion"])
+    variables = {
+        "hora_texto_temporal": obj_integracion.get_child([f"{idx}:HoraTemporal"]),
+        "variable_dato_pluviometro": obj_integracion.get_child([f"{idx}:DatosPluviometroIntegracion"]),
+        "variable_dato_caudal": obj_integracion.get_child([f"{idx}:DatosCaudalIntegracion"]),
+        "estado_sistema_alerta": obj_integracion.get_child([f"{idx}:EstadoSistemaAlerta"]),
+        "estado_sensor_pluviometro": obj_integracion.get_child([f"{idx}:EstadoSensorPluviometroIntegracion"]),
+        "estado_sensor_caudal": obj_integracion.get_child([f"{idx}:EstadoSensorCaudalIntegracion"]),
+    }
+    return servidor_integracion, variables
+
+
+async def main():
+    servidor_integracion, variables = configurar_servidor_integracion()
 
     servidor_integracion.start()
 
-    tasks = [
-        client_task(ENDPOINT_TEMPORAL, URI_TEMPORAL, [["ServidorTemporal", "HoraSimuladaTexto"]]),
-        client_task(ENDPOINT_PLUVIOMETRO, URI_PLUVIOMETRO ,[["Pluviometro", "DatosPluviometro"], ["Pluviometro", "EstadoSensorPluviometro"]]),
-        client_task(ENDPOINT_CAUDAL, URI_CAUDAL ,[["Caudal", "DatosCaudal"], ["Caudal", "EstadoSensorCaudal"]]),
+    clientes = [
+        crear_cliente(ENDPOINT_TEMPORAL, URI_TEMPORAL,
+                      [["ServidorTemporal", "HoraSimuladaTexto"]]),
+        crear_cliente(ENDPOINT_PLUVIOMETRO, URI_PLUVIOMETRO,
+                      [["Pluviometro", "DatosPluviometro"], ["Pluviometro", "EstadoSensorPluviometro"]]),
+        crear_cliente(ENDPOINT_CAUDAL, URI_CAUDAL,
+                      [["Caudal", "DatosCaudal"], ["Caudal", "EstadoSensorCaudal"]]),
     ]
-    await asyncio.gather(*tasks, imprimir_variables())
-
-
-#Definir las variables globales
-variable_dato_pluviometro = None
-hora_texto_temporal = None
-variable_dato_caudal = None
-estado_sistema_alerta = None
-estado_sensor_pluviometro = None
-estado_sensor_caudal = None
+    await asyncio.gather(*clientes, imprimir_variables(variables))
 
 
 if __name__ == "__main__":
