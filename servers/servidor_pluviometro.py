@@ -5,11 +5,12 @@ from asyncua import Client, Node, ua
 from asyncua.sync import Server
 
 # Configuración de archivos y servidor
-endpoint_temporal = "opc.tcp://localhost:4840/freeopcua/servidor_temporal/"
-endpoint_pluviometro = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
-uri_pluviometro = "http://www.f4l1.es/server/pluviometro"
-ruta_xml = "../modelos_datos/modelo_datos_total.xml"
-ruta_csv_pluviometro = "../data/PluviómetroChiva_29octubre2024.csv"
+ENDPOINT_TEMPORAL = "opc.tcp://localhost:4840/freeopcua/servidor_temporal/"
+ENDPOINT_PLUVIOMETRO = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
+URI_TEMPORAL = "http://www.f4l1.es/server/temporal"
+URI_PLUVIOMETRO = "http://www.f4l1.es/server/pluviometro"
+RUTA_XML = "../modelos_datos/modelo_datos_total.xml"
+RUTA_CSV_PLUVIOMETRO = "../data/PluviómetroChiva_29octubre2024.csv"
 
 
 # Funciones auxiliares
@@ -30,15 +31,15 @@ class Pluviometro:
         """
         Inicializa el manejador con los datos de lluvia y la configuración del servidor.
         """
-        self.datos_lluvia = leer_csv(ruta_csv_pluviometro)
+        self.datos_lluvia = leer_csv(RUTA_CSV_PLUVIOMETRO)
 
         # Configuración del servidor OPC UA
         self.servidor = Server()
-        self.servidor.set_endpoint(endpoint_pluviometro)
-        idx = self.servidor.register_namespace(uri_pluviometro)
+        self.servidor.set_endpoint(ENDPOINT_PLUVIOMETRO)
+        idx = self.servidor.register_namespace(URI_PLUVIOMETRO)
 
         # Importar el modelo de datos
-        self.servidor.import_xml(ruta_xml)
+        self.servidor.import_xml(RUTA_XML)
 
         # Obtener referencias a las variables importadas
         self.obj_pluviometro = self.servidor.nodes.objects.get_child([f"{idx}:Pluviometro"])
@@ -53,9 +54,9 @@ class Pluviometro:
         Fábrica asincrónica para crear una instancia de Pluviometro con la configuración inicial.
         """
         # Configuración del cliente OPC UA
-        client = Client(url=endpoint_temporal)
+        client = Client(url=ENDPOINT_TEMPORAL)
         await client.connect()
-        idx = await client.get_namespace_index(uri="http://www.f4l1.es/server/temporal")
+        idx = await client.get_namespace_index(uri=URI_TEMPORAL)
         var = await client.nodes.objects.get_child(f"{idx}:ServidorTemporal/{idx}:HoraSimuladaNumerica")
 
         # Crear instancia de Pluviometro

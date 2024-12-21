@@ -7,6 +7,18 @@ from asyncua import Client, Node
 from collections import deque
 
 
+ENDPOINT_INTEGRACION = "opc.tcp://localhost:4843/f4l1/servidor_integracion/"
+ENDPOINT_TEMPORAL = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
+ENDPOINT_PLUVIOMETRO = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
+ENDPOINT_CAUDAL = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
+URI_TEMPORAL = "http://www.f4l1.es/server/temporal"
+URI_PLUVIOMETRO = "http://www.f4l1.es/server/pluviometro"
+URI_CAUDAL = "http://www.f4l1.es/server/caudal"
+RUTA_XML = "../modelos_datos/modelo_datos_total.xml"
+
+
+
+#Variables Globales para actualizar con las subscripciones
 cambio_hora = False
 hora = ""
 lluvia = ""
@@ -14,21 +26,22 @@ estado_pluviometro = False
 caudal = ""
 estado_caudal = False
 
+
 class SubscriptionHandler:
     def datachange_notification(self, node, val, data):
         global cambio_hora, hora, lluvia, estado_pluviometro, caudal, estado_caudal
         # print(f"La variable '{node}' cambió a {val}")
         # Aquí puedes manejar los cambios de las variables específicas
-        if str(node) == "ns=2;s=HoraSimuladaTexto":  # HoraSimuladaTexto
+        if str(node) == "ns=2;s=HoraSimuladaTexto":         # HoraSimuladaTexto
             hora = val
             cambio_hora = True
-        if str(node) == "ns=2;s=DatosPluviometro":  # DatosPluviometro
+        if str(node) == "ns=2;s=DatosPluviometro":          # DatosPluviometro
             lluvia = val
-        if str(node) == "ns=2;s=EstadoSensorPluviometro":  # EstadoSensorPluviometro
+        if str(node) == "ns=2;s=EstadoSensorPluviometro":   # EstadoSensorPluviometro
             estado_pluviometro = val
-        if str(node) == "ns=2;s=DatosCaudal":  # DatosCaudal
+        if str(node) == "ns=2;s=DatosCaudal":               # DatosCaudal
             caudal = val
-        if str(node) == "ns=2;s=EstadoSensorCaudal":  # EstadoSensorCaudal
+        if str(node) == "ns=2;s=EstadoSensorCaudal":        # EstadoSensorCaudal
             estado_caudal = val
 
 
@@ -85,7 +98,7 @@ async def imprimir_variables():
 
     while True:
         if cambio_hora:
-            time.sleep(0.1) # Margen para evitar leer datos anteriores
+            await asyncio.sleep(0.2) # Margen para evitar leer datos anteriores
 
             lluvia_float = transformar_a_float(lluvia)
             caudal_float = transformar_a_float(caudal)
@@ -98,7 +111,6 @@ async def imprimir_variables():
                 estado_alerta = "NO ALERTA"
 
             print(f"Hora : {hora}, Pluviometro : {lluvia}, Caudal : {caudal}  -> Estado : {estado_alerta}")
-            #dssfdsfesfdfdf
             variable_dato_pluviometro.write_value(lluvia_float)
             hora_texto_temporal.write_value(hora)
             variable_dato_caudal.write_value(caudal_float)
@@ -110,20 +122,15 @@ async def imprimir_variables():
         await asyncio.sleep(0.1)
 
 
-def importar_modelo_desde_xml(servidor, ruta_xml):
-    servidor.import_xml(ruta_xml)
-
-
 async def main():
     global cambio_hora, variable_dato_pluviometro, hora_texto_temporal, variable_dato_caudal, estado_sistema_alerta, estado_sensor_pluviometro, estado_sensor_caudal
     # Crear y arrancar el servidor una sola vez
     servidor_integracion = Server()
-    servidor_integracion.set_endpoint("opc.tcp://localhost:4843/f4l1/servidor_integracion/")
+    servidor_integracion.set_endpoint(ENDPOINT_INTEGRACION)
     uri = "http://www.f4l1.es/server/integracion"
     idx = servidor_integracion.register_namespace(uri)
 
-    ruta_xml = "../modelos_datos/modelo_datos_total.xml"
-    importar_modelo_desde_xml(servidor_integracion, ruta_xml)
+    servidor_integracion.import_xml(RUTA_XML)
 
     obj_integracion = servidor_integracion.nodes.objects.get_child([f"{idx}:Integracion"])
 
@@ -134,20 +141,12 @@ async def main():
     estado_sensor_pluviometro = obj_integracion.get_child([f"{idx}:EstadoSensorPluviometroIntegracion"])
     estado_sensor_caudal = obj_integracion.get_child([f"{idx}:EstadoSensorCaudalIntegracion"])
 
-
     servidor_integracion.start()
 
-    url_servidor_temporal = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
-    url_servidor_pluviometro = "opc.tcp://localhost:4841/f4l1/servidor_pluviometro/"
-    url_servidor_caudal = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
-
     tasks = [
-        client_task(url_servidor_temporal,
-                    "http://www.f4l1.es/server/temporal" ,[["ServidorTemporal", "HoraSimuladaTexto"]]),
-        client_task(url_servidor_pluviometro,
-                    "http://www.f4l1.es/server/pluviometro" ,[["Pluviometro", "DatosPluviometro"], ["Pluviometro", "EstadoSensorPluviometro"]]),
-        client_task(url_servidor_caudal,
-                    "http://www.f4l1.es/server/caudal" ,[["Caudal", "DatosCaudal"], ["Caudal", "EstadoSensorCaudal"]]),
+        client_task(ENDPOINT_TEMPORAL, URI_TEMPORAL, [["ServidorTemporal", "HoraSimuladaTexto"]]),
+        client_task(ENDPOINT_PLUVIOMETRO, URI_PLUVIOMETRO ,[["Pluviometro", "DatosPluviometro"], ["Pluviometro", "EstadoSensorPluviometro"]]),
+        client_task(ENDPOINT_CAUDAL, URI_CAUDAL ,[["Caudal", "DatosCaudal"], ["Caudal", "EstadoSensorCaudal"]]),
     ]
     await asyncio.gather(*tasks, imprimir_variables())
 

@@ -3,15 +3,16 @@ from datetime import datetime, timedelta
 from asyncua.sync import Server
 
 # Configuración de archivos y servidor
-endpoint_temporal = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
-uri_temporal = "http://www.f4l1.es/server/temporal"
-ruta_xml = "../modelos_datos/modelo_datos_total.xml"  # Ruta del archivo XML de datos del modelo
+ENDPOINT_TEMPORAL = "opc.tcp://localhost:4840/f4l1/servidor_temporal/"
+URI_TEMPORAL = "http://www.f4l1.es/server/temporal"
+RUTA_XML = "../modelos_datos/modelo_datos_total.xml"  # Ruta del archivo XML de datos del modelo
+
 
 # Configuración de la fecha y hora inicial
 fecha_hora_inicio_str = "29-10-24 0:00"  # Fecha y hora inicial en formato de cadena
 fecha_hora_inicio_obj = datetime.strptime(fecha_hora_inicio_str, "%d-%m-%y %H:%M")  # Objeto datetime correspondiente
 
-# Actualizacion de la hora
+#Variables Globales para actualizar con las subscripciones
 actualizar_hora = False  # Bandera para habilitar o deshabilitar la actualización de la hora
 porcentaje_dia = 0.0  # Porcentaje del día que ha transcurrido
 # Parámetros de tiempo para la simulación
@@ -72,10 +73,11 @@ def configurar_servidor(endpoint, uri):
     idx = servidor.register_namespace(uri)
 
     # Importar modelo desde XML
-    servidor.import_xml(ruta_xml)
+    servidor.import_xml(RUTA_XML)
 
     # Obtener referencias a las variables importadas
     objeto_temporal = servidor.nodes.objects.get_child([f"{idx}:ServidorTemporal"])
+
     variables = {
         "hora_numerica": objeto_temporal.get_child([f"{idx}:HoraSimuladaNumerica"]),
         "hora_texto": objeto_temporal.get_child([f"{idx}:HoraSimuladaTexto"]),
@@ -124,7 +126,7 @@ def ejecutar_bucle_principal(variables):
         servidor.stop()
 
 if __name__ == "__main__":
-    servidor, variables = configurar_servidor(endpoint_temporal, uri_temporal)
+    servidor, variables = configurar_servidor(ENDPOINT_TEMPORAL, URI_TEMPORAL)
     servidor.start()
 
     iniciar_suscripcion(servidor, variables)

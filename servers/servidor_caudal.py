@@ -5,11 +5,12 @@ from asyncua import Client, Node, ua
 from asyncua.sync import Server
 
 # Configuración de archivos y servidor
-endpoint_temporal = "opc.tcp://localhost:4840/servidor_temporal/"
-endpoint_caudal = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
-uri_caudal = "http://www.f4l1.es/server/caudal"
-ruta_xml = "../modelos_datos/modelo_datos_total.xml"
-ruta_csv_caudal = "../data/cincominutales_modificado.csv"
+ENDPOINT_TEMPORAL = "opc.tcp://localhost:4840/servidor_temporal/"
+ENDPOINT_CAUDAL = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
+URI_TEMPORAL = "http://www.f4l1.es/server/temporal"
+URI_CAUDAL = "http://www.f4l1.es/server/caudal"
+RUTA_XML = "../modelos_datos/modelo_datos_total.xml"
+RUTA_CSV_CAUDAL = "../data/cincominutales_modificado.csv"
 
 
 # Funciones auxiliares
@@ -30,15 +31,15 @@ class Caudal:
         """
         Inicializa el manejador con los datos de caudal y la configuración del servidor.
         """
-        self.datos_caudal = leer_csv(ruta_csv_caudal)
+        self.datos_caudal = leer_csv(RUTA_CSV_CAUDAL)
 
         # Configuración del servidor OPC UA
         self.servidor = Server()
-        self.servidor.set_endpoint(endpoint_caudal)
-        idx = self.servidor.register_namespace(uri_caudal)
+        self.servidor.set_endpoint(ENDPOINT_CAUDAL)
+        idx = self.servidor.register_namespace(URI_CAUDAL)
 
         # Importar el modelo de datos
-        self.servidor.import_xml(ruta_xml)
+        self.servidor.import_xml(RUTA_XML)
 
         # Obtener referencias a las variables importadas
         self.obj_caudal = self.servidor.nodes.objects.get_child([f"{idx}:Caudal"])
@@ -53,9 +54,9 @@ class Caudal:
         Fábrica asincrónica para crear una instancia de Caudal con la configuración inicial.
         """
         # Configuración del cliente OPC UA
-        client = Client(url=endpoint_temporal)
+        client = Client(url=ENDPOINT_TEMPORAL)
         await client.connect()
-        idx = await client.get_namespace_index(uri="http://www.f4l1.es/server/temporal")
+        idx = await client.get_namespace_index(uri=URI_TEMPORAL)
         var = await client.nodes.objects.get_child(f"{idx}:ServidorTemporal/{idx}:HoraSimuladaNumerica")
 
         # Crear instancia de Caudal
