@@ -12,15 +12,17 @@ RUTA_XML = "../modelos_datos/modelo_datos_total.xml"  # Ruta del archivo XML de 
 fecha_hora_inicio_str = "29-10-24 0:00"  # Fecha y hora inicial en formato de cadena
 fecha_hora_inicio_obj = datetime.strptime(fecha_hora_inicio_str, "%d-%m-%y %H:%M")  # Objeto datetime correspondiente
 
-#Variables Globales para actualizar con las subscripciones
+# Variables globales para manejar las subscripciones
 actualizar_hora = False  # Bandera para habilitar o deshabilitar la actualización de la hora
 porcentaje_dia = 0.0  # Porcentaje del día que ha transcurrido
-# Parámetros de tiempo para la simulación
 delta_tiempo = 300  # Variación de tiempo entre pasos en segundos (5 minutos por defecto)
 duracion_simulada_dia = 600  # Duración de un día simulado en segundos (10 minutos por defecto)
 
 
 class ManejadorCambios:
+    """
+    Clase que gestiona los eventos de cambio de datos de las variables en el servidor OPC UA.
+    """
     def datachange_notification(self, node, val, data):
         global delta_tiempo, duracion_simulada_dia, porcentaje_dia, actualizar_hora
         print(f"La variable '{node}' cambió a {val}")
@@ -48,7 +50,8 @@ class ManejadorCambios:
 
 def calcular_hora_nueva():
     """
-    Cambiar la hora si no sale multiple de 5 minutos o con segundos, se aproxima hacia abajo
+    Calcula la nueva hora simulada basada en el porcentaje del día transcurrido,
+    ajustando para evitar segundos sobrantes.
     """
     tiempo_del_dia = timedelta(days=porcentaje_dia)
     hora_nueva = fecha_hora_inicio_obj + tiempo_del_dia
@@ -67,17 +70,19 @@ def calcular_porcentaje_dia(fecha_hora):
 
 
 def configurar_servidor(endpoint, uri):
+    """
+    Configura y devuelve el servidor OPC UA junto con las referencias a las variables.
+    """
     servidor = Server()
     servidor.set_endpoint(endpoint)
 
     idx = servidor.register_namespace(uri)
 
-    # Importar modelo desde XML
+    # Importar modelo de datos desde el XML
     servidor.import_xml(RUTA_XML)
 
     # Obtener referencias a las variables importadas
     objeto_temporal = servidor.nodes.objects.get_child([f"{idx}:ServidorTemporal"])
-
     variables = {
         "hora_numerica": objeto_temporal.get_child([f"{idx}:HoraSimuladaNumerica"]),
         "hora_texto": objeto_temporal.get_child([f"{idx}:HoraSimuladaTexto"]),
@@ -90,6 +95,9 @@ def configurar_servidor(endpoint, uri):
 
 
 def iniciar_suscripcion(servidor, variables):
+    """
+    Inicia las suscripciones a las variables relevantes del servidor para gestionar cambios.
+    """
     handler = ManejadorCambios()
     sub = servidor.create_subscription(500, handler)
     sub.subscribe_data_change([
@@ -100,9 +108,11 @@ def iniciar_suscripcion(servidor, variables):
 
 
 def ejecutar_bucle_principal(variables):
+    """
+    Ejecuta el bucle principal de la simulación, actualizando las variables del servidor.
+    """
     global actualizar_hora
     try:
-        # Iniciar la hora inicial
         hora_simulada = fecha_hora_inicio_obj
 
         while True:
@@ -110,15 +120,13 @@ def ejecutar_bucle_principal(variables):
                 hora_simulada = calcular_hora_nueva()
                 actualizar_hora = False
 
-            # Escribir Timestamp de la hora_simulada
+            # Actualizar las variables en el servidor
             variables["hora_numerica"].write_value(hora_simulada.timestamp())
-
-            # Escribir hora_simulada con formato legible
-            fecha_hora_str = hora_simulada.strftime("%d de %b %H:%M:%S")
-            variables["hora_texto"].write_value(fecha_hora_str)
+            variables["hora_texto"].write_value(hora_simulada.strftime("%d de %b %H:%M:%S"))
 
             incremento_tiempo = timedelta(seconds=delta_tiempo)
             hora_simulada += incremento_tiempo
+
             tiempo_espera = delta_tiempo * duracion_simulada_dia / 86400
             time.sleep(tiempo_espera)
 
@@ -126,9 +134,10 @@ def ejecutar_bucle_principal(variables):
         servidor.stop()
 
 if __name__ == "__main__":
+    # Configura y arranca el servidor
     servidor, variables = configurar_servidor(ENDPOINT_TEMPORAL, URI_TEMPORAL)
     servidor.start()
 
+    # Inicia las suscripciones y ejecuta el bucle principal
     iniciar_suscripcion(servidor, variables)
-
     ejecutar_bucle_principal(variables)

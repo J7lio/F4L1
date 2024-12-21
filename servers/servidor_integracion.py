@@ -15,7 +15,6 @@ URI_CAUDAL = "http://www.f4l1.es/server/caudal"
 RUTA_XML = "../modelos_datos/modelo_datos_total.xml"
 
 
-
 #Variables Globales para actualizar con las subscripciones
 cambio_hora = False
 hora = ""
@@ -25,7 +24,10 @@ caudal = ""
 estado_caudal = False
 
 
-class SubscriptionHandler:
+class ManejadorCambios:
+    """
+    Clase para manejar las notificaciones de cambios en las variables de los servidores OPC UA.
+    """
     def datachange_notification(self, node, val, data):
         global cambio_hora, hora, lluvia, estado_pluviometro, caudal, estado_caudal
         # print(f"La variable '{node}' cambió a {val}")
@@ -44,6 +46,9 @@ class SubscriptionHandler:
 
 
 async def crear_cliente(server_endpoint, namespace,  array_variables_path):
+    """
+    Crea un cliente OPC UA para suscribirse a las variables de cada servidor.
+    """
     async with Client(url=server_endpoint) as client:
         variables_cliente = []
         for paths in array_variables_path:
@@ -54,7 +59,7 @@ async def crear_cliente(server_endpoint, namespace,  array_variables_path):
 
             variable = await client.nodes.objects.get_child(variable_path)
             variables_cliente.append(variable)
-        handler = SubscriptionHandler()
+        handler = ManejadorCambios()
         subscription = await client.create_subscription(100, handler)
         await subscription.subscribe_data_change(variables_cliente)
         try:
@@ -65,6 +70,9 @@ async def crear_cliente(server_endpoint, namespace,  array_variables_path):
 
 
 def transformar_a_float(var):
+    """
+    Convierte una cadena en formato numérico a float. Si no es válida, retorna -1.
+    """
     try:
         var = float(var.replace(',', '.'))
     except ValueError:
@@ -74,17 +82,23 @@ def transformar_a_float(var):
 
 
 def hay_alerta(cola_lluvias, caudal):
-    if not estado_pluviometro or not estado_caudal:  # Si hay fallo en alguno de los sensores
+    """
+    Determina si existe un estado de alerta basado en los datos recibidos.
+    """
+    if not estado_pluviometro or not estado_caudal: # Si hay fallo en alguno de los sensores
         return True
-    elif sum(cola_lluvias) > 50:                # Si se superan los 50 mm/h
+    elif sum(cola_lluvias) > 50:                    # Si se superan los 50 mm/h
         return True
-    elif caudal > 150:                          # Si se supera el caudal de 150m^3/s
+    elif caudal > 150:                              # Si se supera el caudal de 150m^3/s
         return True
     else:
         return False
 
 
-async def imprimir_variables(variables):
+async def bucle_integracion(variables):
+    """
+    Crea el bucle del servidor de integración que comprueva y publica la alerta.
+    """
     global hora, lluvia, caudal, cambio_hora
 
     cola_lluvias = deque(maxlen=12) # Como la lluvia va cada 5 minutos para conseguir las precipitaciones por hora cogemos las ultimas 60/5 = 12
@@ -117,6 +131,9 @@ async def imprimir_variables(variables):
 
 
 def configurar_servidor_integracion():
+    """
+    Configura el servidor OPC UA de integración y devuelve sus variables.
+    """
     servidor_integracion = Server()
     servidor_integracion.set_endpoint(ENDPOINT_INTEGRACION)
     idx = servidor_integracion.register_namespace(URI_INTEGRACION)
@@ -135,6 +152,10 @@ def configurar_servidor_integracion():
 
 
 async def main():
+    """
+    Configura el servidor de integracion, crea los clientes para leer los datos
+    y ejecuta el bucle principal del codigo.
+    """
     servidor_integracion, variables = configurar_servidor_integracion()
 
     servidor_integracion.start()
@@ -147,7 +168,7 @@ async def main():
         crear_cliente(ENDPOINT_CAUDAL, URI_CAUDAL,
                       [["Caudal", "DatosCaudal"], ["Caudal", "EstadoSensorCaudal"]]),
     ]
-    await asyncio.gather(*clientes, imprimir_variables(variables))
+    await asyncio.gather(*clientes, bucle_integracion(variables))
 
 
 if __name__ == "__main__":
