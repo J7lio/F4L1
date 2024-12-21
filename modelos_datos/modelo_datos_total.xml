@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Variables Servidor Temporal -->
+  <!-- Objeto principal -->
+  <UAObject NodeId="ns=2;s=ServidorTemporal" BrowseName="2:ServidorTemporal">
+    <DisplayName>ServidorTemporal</DisplayName>
+    <Description>Carpeta que incluye los datos del Servidor Temporal</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=61</Reference> <!-- FolderType -->
+      <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference> <!-- Objects Folder -->
+    </References>
+  </UAObject>
+
+  <!-- Variable HoraSimuladaNumerica -->
+  <UAVariable NodeId="ns=2;s=HoraSimuladaNumerica" BrowseName="2:HoraSimuladaNumerica" DataType="Double">
+    <DisplayName>HoraSimuladaNumerica</DisplayName>
+    <Description>La hora simulada en formato UNIX</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>0.0</Double> <!-- Este valor será reemplazado dinámicamente -->
+    </Value>
+  </UAVariable>
+
+  <!-- Variable HoraSimuladaTexto -->
+  <UAVariable NodeId="ns=2;s=HoraSimuladaTexto" BrowseName="2:HoraSimuladaTexto" DataType="String">
+    <DisplayName>HoraSimuladaTexto</DisplayName>
+    <Description>La hora simulada en formato natural ej(29 de Oct 07:20:00)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <String>00:00:00</String>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable PorcentajeDelDia29 -->
+  <UAVariable NodeId="ns=2;s=PorcentajeDelDia29" BrowseName="2:PorcentajeDelDia29" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>PorcentajeDelDia29</DisplayName>
+    <Description>Cambia la hora del dia, 0 -> 00:00 del 29, 1 -> 00:00 del 30, Cambiable en el Browser</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>0.0</Double> <!-- Este valor será reemplazado dinámicamente -->
+    </Value>
+  </UAVariable>
+
+  <!-- Variable DeltaTiempo -->
+  <UAVariable NodeId="ns=2;s=DeltaTiempo" BrowseName="2:DeltaTiempo" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DeltaTiempo</DisplayName>
+    <Description>De cuanto en cuanto aumenta la hora en segundos, Cambiable en el Browser</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>300.0</Double> <!-- Valor predeterminado: delta_tiempo -->
+    </Value>
+  </UAVariable>
+
+  <!-- Variable DuracionSimuladaDia -->
+  <UAVariable NodeId="ns=2;s=DuracionSimuladaDia" BrowseName="2:DuracionSimuladaDia" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DuracionSimuladaDia</DisplayName>
+    <Description>Tiempo en segundos que tarda en simularse un dia, Cambiable en el Browser</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=ServidorTemporal</Reference>
+    </References>
+    <Value>
+      <Double>600.0</Double> <!-- Valor predeterminado: duracion_simulada_dia -->
+    </Value>
+  </UAVariable>
+
+
+
+
+  <!-- Variables Servidor Pluviometro -->
+  <!-- Objeto Pluviometro -->
+  <UAObject NodeId="ns=2;s=Pluviometro" BrowseName="2:Pluviometro">
+    <DisplayName>Pluviometro</DisplayName>
+    <Description>Objeto que agrupa los datos del Pluviometro</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=61</Reference> <!-- FolderType -->
+      <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference> <!-- Objects Folder -->
+    </References>
+  </UAObject>
+
+  <!-- Variable DatosPluviometro -->
+  <UAVariable NodeId="ns=2;s=DatosPluviometro" BrowseName="2:DatosPluviometro" DataType="String" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DatosPluviometro</DisplayName>
+    <Description>Datos del pluviometro (formato de texto)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Pluviometro</Reference>
+    </References>
+    <Value>
+      <String>NoData</String>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable EstadoSensorPluviometro -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorPluviometro" BrowseName="2:EstadoSensorPluviometro" DataType="Boolean">
+    <DisplayName>EstadoSensorPluviometro</DisplayName>
+    <Description>Estado del sensor del pluviometro (valor booleano 1 bien 0 mal)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Pluviometro</Reference>
+    </References>
+    <Value>
+      <Boolean>false</Boolean>
+    </Value>
+  </UAVariable>
+
+
+
+
+  <!-- Variables Servidor Caudal -->
+  <!-- Objeto Caudal -->
+  <UAObject NodeId="ns=2;s=Caudal" BrowseName="2:Caudal">
+    <DisplayName>Caudal</DisplayName>
+    <Description>Objeto que agrupa los datos del Caudal</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=61</Reference> <!-- FolderType -->
+      <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference> <!-- Objects Folder -->
+    </References>
+  </UAObject>
+
+  <!-- Variable DatosCaudal -->
+  <UAVariable NodeId="ns=2;s=DatosCaudal" BrowseName="2:DatosCaudal" DataType="String" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DatosCaudal</DisplayName>
+    <Description>Datos del caudal (formato de texto)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Caudal</Reference>
+    </References>
+    <Value>
+      <String>NoData</String>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable EstadoSensorCaudal -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorCaudal" BrowseName="2:EstadoSensorCaudal" DataType="Boolean">
+    <DisplayName>EstadoSensorCaudal</DisplayName>
+    <Description>Estado del sensor de caudal (valor booleano 1 bien 0 mal)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Caudal</Reference>
+    </References>
+    <Value>
+      <Boolean>false</Boolean>
+    </Value>
+  </UAVariable>
+
+
+
+
+
+
+  <!-- Variables Servidor Integracion -->
+  <!-- Objeto Integracion -->
+  <UAObject NodeId="ns=2;s=Integracion" BrowseName="2:Integracion">
+    <DisplayName>Integracion</DisplayName>
+    <Description>Objeto que agrupa los datos de Integración</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=61</Reference> <!-- FolderType -->
+      <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference> <!-- Objects Folder -->
+    </References>
+  </UAObject>
+
+  <!-- Variable HoraTemporal -->
+  <UAVariable NodeId="ns=2;s=HoraTemporal" BrowseName="2:HoraTemporal" DataType="String" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>HoraTemporal</DisplayName>
+    <Description>Hora temporal del sistema</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <String>00:00:00</String>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable DatosPluviometroIntegracion -->
+  <UAVariable NodeId="ns=2;s=DatosPluviometroIntegracion" BrowseName="2:DatosPluviometroIntegracion" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DatosPluviometroIntegracion</DisplayName>
+    <Description>Datos del pluviometro en la integración</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <Double>0.0</Double>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable DatosCaudalIntegracion -->
+  <UAVariable NodeId="ns=2;s=DatosCaudalIntegracion" BrowseName="2:DatosCaudalIntegracion" DataType="Double" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>DatosCaudalIntegracion</DisplayName>
+    <Description>Datos del caudal en la integración</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <Double>0.0</Double>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable EstadoSistemaAlerta -->
+  <UAVariable NodeId="ns=2;s=EstadoSistemaAlerta" BrowseName="2:EstadoSistemaAlerta" DataType="String" AccessLevel="3" UserAccessLevel="3">
+    <DisplayName>EstadoSistemaAlerta</DisplayName>
+    <Description>Estado del sistema de alerta</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <String></String>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable EstadoSensorCaudal -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorCaudalIntegracion" BrowseName="2:EstadoSensorCaudalIntegracion" DataType="Boolean">
+    <DisplayName>EstadoSensorCaudalIntegracion</DisplayName>
+    <Description>Estado del sensor de caudal (valor booleano 1 bien 0 mal)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <Boolean>false</Boolean>
+    </Value>
+  </UAVariable>
+
+  <!-- Variable EstadoSensorPluviometro -->
+  <UAVariable NodeId="ns=2;s=EstadoSensorPluviometroIntegracion" BrowseName="2:EstadoSensorPluviometroIntegracion" DataType="Boolean">
+    <DisplayName>EstadoSensorPluviometroIntegracion</DisplayName>
+    <Description>Estado del sensor del pluviometro (valor booleano 1 bien 0 mal)</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=63</Reference> <!-- BaseDataVariableType -->
+      <Reference ReferenceType="Organizes" IsForward="false">ns=2;s=Integracion</Reference>
+    </References>
+    <Value>
+      <Boolean>false</Boolean>
+    </Value>
+  </UAVariable>
+
+</UANodeSet>

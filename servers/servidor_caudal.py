@@ -4,40 +4,75 @@ import asyncio
 from asyncua import Client, Node, ua
 from asyncua.sync import Server
 
+# Configuración de archivos y servidor
+endpoint_temporal = "opc.tcp://localhost:4840/servidor_temporal/"
+endpoint_caudal = "opc.tcp://localhost:4842/f4l1/servidor_caudal/"
+uri_caudal = "http://www.f4l1.es/server/caudal"
+ruta_xml = "../modelos_datos/modelo_datos_total.xml"
+ruta_csv_caudal = "../data/cincominutales_modificado.csv"
 
+
+# Funciones auxiliares
 def leer_csv(ruta_csv):
+    """
+    Lee un archivo CSV y devuelve una lista de diccionarios con los datos.
+    """
     with open(ruta_csv, "r") as archivo_csv:
-        lector_csv = csv.DictReader(archivo_csv)  # Lee las filas como diccionarios
-        return [fila for fila in lector_csv]  # Devuelve las filas del csv en una lista de diccionarios
+        lector_csv = csv.DictReader(archivo_csv)
+        return [fila for fila in lector_csv]
 
 
-class SubscriptionHandler:
+class Caudal:
     """
-    The SubscriptionHandler is used to handle the data that is received for the subscription.
+    Clase para manejar la suscripción y publicación de datos de caudal.
     """
-
-
     def __init__(self):
-        self.ruta_csv_caudal = "../data/cincominutales_modificado.csv"
-        self.datos_caudal = leer_csv(self.ruta_csv_caudal)
+        """
+        Inicializa el manejador con los datos de caudal y la configuración del servidor.
+        """
+        self.datos_caudal = leer_csv(ruta_csv_caudal)
 
+        # Configuración del servidor OPC UA
         self.servidor = Server()
-        self.servidor.set_endpoint("opc.tcp://localhost:4842/f4l1/servidor_caudal/")
+        self.servidor.set_endpoint(endpoint_caudal)
+        idx = self.servidor.register_namespace(uri_caudal)
 
-        uri = "http://www.f4l1.es/server/caudal"
-        idx = self.servidor.register_namespace(uri)
+        # Importar el modelo de datos
+        self.servidor.import_xml(ruta_xml)
 
-        self.obj_caudal = self.servidor.nodes.objects.add_object(idx, "Caudal")
-
-        self.variable_caudal_dato = self.obj_caudal.add_variable(idx, "DatosCaudal", "NoData")
-        self.variable_caudal_dato.set_writable()
+        # Obtener referencias a las variables importadas
+        self.obj_caudal = self.servidor.nodes.objects.get_child([f"{idx}:Caudal"])
+        self.variable_caudal_dato = self.obj_caudal.get_child([f"{idx}:DatosCaudal"])
+        self.variable_estado_sensor = self.obj_caudal.get_child([f"{idx}:EstadoSensorCaudal"])
 
         self.servidor.start()
 
+    @classmethod
+    async def crea_caudal(cls):
+        """
+        Fábrica asincrónica para crear una instancia de Caudal con la configuración inicial.
+        """
+        # Configuración del cliente OPC UA
+        client = Client(url=endpoint_temporal)
+        await client.connect()
+        idx = await client.get_namespace_index(uri="http://www.f4l1.es/server/temporal")
+        var = await client.nodes.objects.get_child(f"{idx}:ServidorTemporal/{idx}:HoraSimuladaNumerica")
+
+        # Crear instancia de Caudal
+        caudal = cls()
+
+        # Crear una suscripción
+        caudal.subscription = await client.create_subscription(100, caudal)
+
+        # Suscribirse a cambios de datos
+        await caudal.subscription.subscribe_data_change(var)
+
+        # Retornar el caudal y el cliente
+        return caudal, client
 
     def leer_valor_por_hora(self, fecha):
         """
-        Lee un valor de self.datos_lluvia segun la fecha pasada por argumento
+        Busca y devuelve el valor de caudal correspondiente a la fecha pasada.
         """
         data = None
         for row in self.datos_caudal:
@@ -52,41 +87,46 @@ class SubscriptionHandler:
 
         return data
 
-
     def publicar_caudal(self, dato):
-        self.variable_caudal_dato.write_value(dato)
-        print("Dato registrado: ", dato)
+        """
+        Publica el dato de caudal en la variable correspondiente.
+        """
+        if self.variable_caudal_dato:
+            self.variable_caudal_dato.write_value(dato)
 
-
+    def publicar_error(self, dato):
+        """
+        Publica el estado del sensor de caudal (si está funcionando o no).
+        """
+        if self.variable_estado_sensor:
+            if dato == "Fallo Sensor" or dato == "Hora No Registrada":
+                self.variable_estado_sensor.write_value(False)
+            else:
+                self.variable_estado_sensor.write_value(True)
 
     def datachange_notification(self, node: Node, val, data):
         """
-        Callback for asyncua Subscription.
-        This method will be called when the Client received a data change message from the Server.
+        Callback que maneja los cambios de datos recibidos desde el servidor.
         """
         hora_str = datetime.fromtimestamp(val).strftime("%d-%m-%y %#H:%M")
         dato_caudal = self.leer_valor_por_hora(hora_str)
+        print("Hora:", hora_str, "Publicando dato:", dato_caudal)
         self.publicar_caudal(dato_caudal)
+        self.publicar_error(dato_caudal)
 
 
 async def main():
     """
-    Main task of this Client-Subscription example.
+    Función principal para la ejecución del cliente y suscripción.
     """
-    client = Client(url="opc.tcp://localhost:4840/servidor_temporal/")
-    async with client:
-        idx = await client.get_namespace_index(uri="http://www.f4l1.es/server/temporal")
-        var = await client.nodes.objects.get_child(f"{idx}:ServidorTemporal/{idx}:HoraSimuladaNumerica")
-        handler = SubscriptionHandler()
-        # We create a Client Subscription.
-        subscription = await client.create_subscription(100, handler)
+    # Crear una instancia de Caudal utilizando la fábrica asincrónica
+    caudal, client = await Caudal.crea_caudal()
 
-        await subscription.subscribe_data_change(var)
-        try:
-            while True:
-                await asyncio.sleep(1)  # Keep the event loop alive
-        finally:
-            await subscription.delete()  # Cleanup on exit
+    try:
+        while True:
+            await asyncio.sleep(1)  # Mantener vivo el bucle de eventos
+    finally:
+        await client.disconnect()  # Desconectar el cliente al finalizar
 
 
 if __name__ == "__main__":
